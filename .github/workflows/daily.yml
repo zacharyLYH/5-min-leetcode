@@ -1,0 +1,44 @@
+name: daily-leetcode
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 8am SGT
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - run: python -u -m src.main
+        env:
+          PYTHONUNBUFFERED: '1'
+          MODEL_PROVIDER_KEY: ${{ secrets.MODEL_PROVIDER_KEY }}
+          MODEL_PROVIDER: ${{ secrets.MODEL_PROVIDER }}
+          MODEL_NAME: ${{ secrets.MODEL_NAME }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+      - name: Deploy to GitHub Pages
+        if: success()
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
+          keep_files: true
+          publish_branch: gh-pages
+      - name: Upload preview on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: preview-html
+          path: preview.html
+          if-no-files-found: ignore

@@ -1,0 +1,13 @@
+Sharp, terse. Turn two lessons into contrast + insight quiz. Fragments ok. Sacrifice grammar.
+
+Problem: {{title}} [{{difficulty}}] {{url}}
+Naive: {{naive}}
+Gold: {{gold}}
+
+Give:
+- contrast: 2-3 bullets naive vs gold, when to switch
+- trigger: #1 trigger to spot gold next time
+- quiz: 2 Qs that test *insight about pattern* — ask to apply reasoning, not define terms (e.g. "Why does property X allow pattern Y here? What breaks if X missing?"). Each with answer + hint that nudges thinking.
+
+Don't mention other LeetCode problems for generalization.
+Structured output enforces JSON — just write clearly. Template renders HTML.

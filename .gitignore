@@ -1,0 +1,7 @@
+.env
+.pytest_cache
+.venv
+src/__pycache__
+tests/__pycache__
+site/
+preview.html
