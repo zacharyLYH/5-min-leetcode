@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Earliest Finish Time for Land and Water Rides I — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Earliest Finish Time for Land and Water Rides I</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-600 text-white">Easy</span>
+        <span class="text-xs text-slate-400 break-words">Array, Two Pointers, Binary Search, Greedy, Sorting</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/earliest-finish-time-for-land-and-water-rides-i/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: 5-min read -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-600 w-1/3"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p data-end="143" data-start="53">You are given two categories of theme park attractions: <strong data-end="122" data-start="108">land rides</strong> and <strong data-end="142" data-start="127">water rides</strong>.</p>
+
+<ul>
+	<li data-end="163" data-start="147"><strong data-end="161" data-start="147">Land rides</strong>
+
+	<ul>
+		<li data-end="245" data-start="168"><code data-end="186" data-start="168">landStartTime[i]</code> &ndash; the earliest time the <code>i<sup>th</sup></code> land ride can be boarded.</li>
+		<li data-end="306" data-start="250"><code data-end="267" data-start="250">landDuration[i]</code> &ndash; how long the <code>i<sup>th</sup></code> land ride lasts.</li>
+	</ul>
+	</li>
+	<li><strong data-end="325" data-start="310">Water rides</strong>
+	<ul>
+		<li><code data-end="351" data-start="332">waterStartTime[j]</code> &ndash; the earliest time the <code>j<sup>th</sup></code> water ride can be boarded.</li>
+		<li><code data-end="434" data-start="416">waterDuration[j]</code> &ndash; how long the <code>j<sup>th</sup></code> water ride lasts.</li>
+	</ul>
+	</li>
+</ul>
+
+<p data-end="569" data-start="476">A tourist must experience <strong data-end="517" data-start="502">exactly one</strong> ride from <strong data-end="536" data-start="528">each</strong> category, in <strong data-end="566" data-start="550">either order</strong>.</p>
+
+<ul>
+	<li data-end="641" data-start="573">A ride may be started at its opening time or <strong data-end="638" data-start="618">any later moment</strong>.</li>
+	<li data-end="715" data-start="644">If a ride is started at time <code data-end="676" data-start="673">t</code>, it finishes at time <code data-end="712" data-start="698">t + duration</code>.</li>
+	<li data-end="834" data-start="718">Immediately after finishing one ride the tourist may board the other (if it is already open) or wait until it opens.</li>
+</ul>
+
+<p data-end="917" data-start="836">Return the <strong data-end="873" data-start="847">earliest possible time</strong> at which the tourist can finish both rides.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">landStartTime = [2,8], landDuration = [4,1], waterStartTime = [6], waterDuration = [3]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">9</span></p>
+
+<p><strong>Explanation:</strong>​​​​​​​</p>
+
+<ul>
+	<li data-end="181" data-start="145">Plan A (land ride 0 &rarr; water ride 0):
+	<ul>
+		<li data-end="272" data-start="186">Start land ride 0 at time <code data-end="234" data-start="212">landStartTime[0] = 2</code>. Finish at <code data-end="271" data-start="246">2 + landDuration[0] = 6</code>.</li>
+		<li data-end="392" data-start="277">Water ride 0 opens at time <code data-end="327" data-start="304">waterStartTime[0] = 6</code>. Start immediately at <code data-end="353" data-start="350">6</code>, finish at <code data-end="391" data-start="365">6 + waterDuration[0] = 9</code>.</li>
+	</ul>
+	</li>
+	<li data-end="432" data-start="396">Plan B (water ride 0 &rarr; land ride 1):
+	<ul>
+		<li data-end="526" data-start="437">Start water ride 0 at time <code data-end="487" data-start="464">waterStartTime[0] = 6</code>. Finish at <code data-end="525" data-start="499">6 + waterDuration[0] = 9</code>.</li>
+		<li data-end="632" data-start="531">Land ride 1 opens at <code data-end="574" data-start="552">landStartTime[1] = 8</code>. Start at time <code data-end="593" data-start="590">9</code>, finish at <code data-end="631" data-start="605">9 + landDuration[1] = 10</code>.</li>
+	</ul>
+	</li>
+	<li data-end="672" data-start="636">Plan C (land ride 1 &rarr; water ride 0):
+	<ul>
+		<li data-end="763" data-start="677">Start land ride 1 at time <code data-end="725" data-start="703">landStartTime[1] = 8</code>. Finish at <code data-end="762" data-start="737">8 + landDuration[1] = 9</code>.</li>
+		<li data-end="873" data-start="768">Water ride 0 opened at <code data-end="814" data-start="791">waterStartTime[0] = 6</code>. Start at time <code data-end="833" data-start="830">9</code>, finish at <code data-end="872" data-start="845">9 + waterDuration[0] = 12</code>.</li>
+	</ul>
+	</li>
+	<li data-end="913" data-start="877">Plan D (water ride 0 &rarr; land ride 0):
+	<ul>
+		<li data-end="1007" data-start="918">Start water ride 0 at time <code data-end="968" data-start="945">waterStartTime[0] = 6</code>. Finish at <code data-end="1006" data-start="980">6 + waterDuration[0] = 9</code>.</li>
+		<li data-end="1114" data-start="1012">Land ride 0 opened at <code data-end="1056" data-start="1034">landStartTime[0] = 2</code>. Start at time <code data-end="1075" data-start="1072">9</code>, finish at <code data-end="1113" data-start="1087">9 + landDuration[0] = 13</code>.</li>
+	</ul>
+	</li>
+</ul>
+
+<p data-end="1161" data-is-last-node="" data-is-only-node="" data-start="1116">Plan A gives the earliest finish time of 9.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">landStartTime = [5], landDuration = [3], waterStartTime = [1], waterDuration = [10]</span></p>
+
+<p><strong>Output:</strong> <span class="example-io">14</span></p>
+
+<p><strong>Explanation:</strong>​​​​​​​</p>
+
+<ul data-end="1589" data-start="1086">
+	<li data-end="1124" data-start="1088">Plan A (water ride 0 &rarr; land ride 0):
+	<ul>
+		<li data-end="1219" data-start="1129">Start water ride 0 at time <code data-end="1179" data-start="1156">waterStartTime[0] = 1</code>. Finish at <code data-end="1218" data-start="1191">1 + waterDuration[0] = 11</code>.</li>
+		<li data-end="1338" data-start="1224">Land ride 0 opened at <code data-end="1268" data-start="1246">landStartTime[0] = 5</code>. Start immediately at <code data-end="1295" data-start="1291">11</code> and finish at <code data-end="1337" data-start="1310">11 + landDuration[0] = 14</code>.</li>
+	</ul>
+	</li>
+	<li data-end="1378" data-start="1342">Plan B (land ride 0 &rarr; water ride 0):
+	<ul>
+		<li data-end="1469" data-start="1383">Start land ride 0 at time <code data-end="1431" data-start="1409">landStartTime[0] = 5</code>. Finish at <code data-end="1468" data-start="1443">5 + landDuration[0] = 8</code>.</li>
+		<li data-end="1589" data-start="1474">Water ride 0 opened at <code data-end="1520" data-start="1497">waterStartTime[0] = 1</code>. Start immediately at <code data-end="1546" data-start="1543">8</code> and finish at <code data-end="1588" data-start="1561">8 + waterDuration[0] = 18</code>.</li>
+	</ul>
+	</li>
+</ul>
+
+<p data-end="1640" data-is-last-node="" data-is-only-node="" data-start="1591">Plan A provides the earliest finish time of 14.<strong>​​​​​​​</strong></p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li data-end="38" data-start="16"><code data-end="36" data-start="16">1 &lt;= n, m &lt;= 100</code></li>
+	<li data-end="93" data-start="41"><code data-end="91" data-start="41">landStartTime.length == landDuration.length == n</code></li>
+	<li data-end="150" data-start="96"><code data-end="148" data-start="96">waterStartTime.length == waterDuration.length == m</code></li>
+	<li data-end="237" data-start="153"><code data-end="235" data-start="153">1 &lt;= landStartTime[i], landDuration[i], waterStartTime[j], waterDuration[j] &lt;= 1000</code></li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/earliest-finish-time-for-land-and-water-rides-i/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive: double loop O(n*m) recomputes max+add for every pair, no reuse</li><li>Gold: sort one list, build prefix/suffix minima, answer each finish with binary search O((n+m)log(n+m))</li><li>Switch when n*m grows beyond a few thousand or when you see repeated max(start+dur, otherStart) pattern</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> Notice the finish time formula splits into two monotonic cases based on whether the other ride starts before or after the first ride finishes</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: functional, not cosmetic, pattern in motion -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Sort + Prefix/Suffix Min + Binary Search</div>
+      <div id="viz" class="mt-3 flex items-center justify-center gap-1 h-12 font-mono text-xs"></div>
+      <div class="text-[10px] opacity-40 text-center mt-1">watch the pattern move • tap to replay</div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Naive Solution</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Gold Pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Brute force pair enumeration <span class='opacity-60'>— Try every land ride then every water ride (or vice versa) and compute finish time</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>n,m up to 100 =&gt; 10^4 combos, but naive double loop over all pairs for each order yields O(n*m) which is fine, but if we also consider ordering we might double work</li><li>Repeatedly recomputes max(start_time, finish_time) for each pair without early pruning</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n*m) time, O(1) extra space</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def earliestFinishTime(landStart, landDur, waterStart, waterDur):
+    best = float(&#x27;inf&#x27;)
+    for i in range(len(landStart)):
+        for j in range(len(waterStart)):
+            # land then water
+            t = landStart[i] + landDur[i]
+            t = max(t, waterStart[j]) + waterDur[j]
+            best = min(best, t)
+            # water then land
+            t = waterStart[j] + waterDur[j]
+            t = max(t, landStart[i]) + landDur[i]
+            best = min(best, t)
+    return best</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>When constraints are tiny, brute force is acceptable; avoid if input size grows</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Sort + Prefix/Suffix Min + Binary Search</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>First, notice that delaying a ride never helps, so each ride starts at its earliest opening time. This turns the finish time for a pair into a simple formula that depends only on the ride’s finish time and the other ride’s start time and duration. After sorting one list by start time, we can pre‑compute the best duration for all rides that start before a given point (prefix min) and the best (start+duration) for rides that start after (suffix min). Then for each possible finish time we binary‑search the split point and combine the two minima in O(log n).</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>The finish time expression splits into two cases based on whether the other ride’s start time is ≤ or &gt; the current ride’s finish time.</li><li>Both cases become monotonic after sorting by start time, allowing prefix/suffix minima.</li><li>Constraints are small but the pattern gives O((n+m) log (n+m)) instead of brute O(nm).</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Need to minimize over pairs a formula involving max(start1+dur1, start2) + dur2 (or symmetric).</li><li>Start times and durations are independent positive integers ≤ 1000.</li><li>Sorting one list lets us answer “best partner” queries with a binary search.</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine you realize waiting to start a ride only makes you finish later, so you always start each ride at its earliest opening.</li><li>Then the total time for land→water is max(landFinish, waterStart) + waterDur, which is either landFinish+waterDur (if water opens early) or waterStart+waterDur (if water opens later).</li><li>Now you see you need the minimum over all water rides of either a constant plus waterDur (for early opens) or waterStart+waterDur (for late opens); sorting lets you get the minimum of each group with a prefix min of durations and a suffix min of start+duration.</li><li>Do the same for water→land and take the overall minimum.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (5 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Compute arrays landFinish = landStart+landDuration and waterFinish = waterStart+waterDuration.</li><li>Sort water rides by start time; build prefix min of waterDuration and suffix min of (start+duration).</li><li>For each landFinish, binary‑search the split in the sorted water starts and combine the two minima to get the best land→water time.</li><li>Repeat the same process swapping land and water to get the best water→land time.</li><li>Return the smallest of the two results.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> If stuck, write the O(nm) brute force to confirm the formula. · Then sort one list and think about how to answer “what’s the best water ride for a given land finish?” in sub‑linear time.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def best(finish, starts, pref_min_dur, suff_min_sd):  # core loop ≤12 lines  n    import bisect  n    ans = float(&#x27;inf&#x27;)  n    for f in finish:  n        i = bisect.bisect_right(starts, f)  n        if i:  n            ans = min(ans, f + pref_min_dur[i-1])  n        if i &lt; len(starts):  n            ans = min(ans, suff_min_sd[i])  n    return ans</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O((n+m) log (n+m))</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why does sorting the partner rides by start time let us replace the inner loop with a prefix min of durations and a suffix min of (start+duration)?</div><div class='text-xs opacity-60 mt-1'>Hint: Think about what the max(...) becomes in each region and how that isolates a term that depends only on the partner ride.</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>After sorting, all rides with start ≤ current finish form a prefix where the extra wait is zero, so total = finish + duration; the minimum duration in that prefix gives the best case. Rides with start &gt; finish form a suffix where wait = start‑finish, so total = start+duration; the minimum start+duration in that suffix gives the best case.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: What would break the prefix/suffix trick if we could not assume each ride starts at its earliest opening time?</div><div class='text-xs opacity-60 mt-1'>Hint: Consider whether the expression max(start+dur, otherStart) + otherDur still separates into two independent parts when start is variable.</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>If we could delay a ride, the finish time would no longer be a simple function of start+duration; the wait term could depend on chosen delay, destroying the monotonic split needed for prefix/suffix minima.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">see min over pairs with max+add → think sort+prefix/suffix+binary</p>
+      <a href="https://leetcode.com/problems/earliest-finish-time-for-land-and-water-rides-i/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align (also -data divs)</div>
+        <script type="application/json" id="artifact-naive">{"complexity": "O(n*m) time, O(1) extra space", "pattern": "Brute force pair enumeration", "starter_code": "def earliestFinishTime(landStart, landDur, waterStart, waterDur):\n    best = float('inf')\n    for i in range(len(landStart)):\n        for j in range(len(waterStart)):\n            # land then water\n            t = landStart[i] + landDur[i]\n            t = max(t, waterStart[j]) + waterDur[j]\n            best = min(best, t)\n            # water then land\n            t = waterStart[j] + waterDur[j]\n            t = max(t, landStart[i]) + landDur[i]\n            best = min(best, t)\n    return best", "takeaway": "When constraints are tiny, brute force is acceptable; avoid if input size grows", "why_obvious": "Try every land ride then every water ride (or vice versa) and compute finish time", "why_stalls": ["n,m up to 100 => 10^4 combos, but naive double loop over all pairs for each order yields O(n*m) which is fine, but if we also consider ordering we might double work", "Repeatedly recomputes max(start_time, finish_time) for each pair without early pruning"]}</script>
+        <script type="application/json" id="artifact-gold">{"pattern": "Sort + Prefix/Suffix Min + Binary Search", "concept": "First, notice that delaying a ride never helps, so each ride starts at its earliest opening time. This turns the finish time for a pair into a simple formula that depends only on the ride’s finish time and the other ride’s start time and duration. After sorting one list by start time, we can pre‑compute the best duration for all rides that start before a given point (prefix min) and the best (start+duration) for rides that start after (suffix min). Then for each possible finish time we binary‑search the split point and combine the two minima in O(log n).", "properties": ["The finish time expression splits into two cases based on whether the other ride’s start time is ≤ or > the current ride’s finish time.", "Both cases become monotonic after sorting by start time, allowing prefix/suffix minima.", "Constraints are small but the pattern gives O((n+m) log (n+m)) instead of brute O(nm)."], "triggers": ["Need to minimize over pairs a formula involving max(start1+dur1, start2) + dur2 (or symmetric).", "Start times and durations are independent positive integers ≤ 1000.", "Sorting one list lets us answer “best partner” queries with a binary search."], "first_principles": ["Imagine you realize waiting to start a ride only makes you finish later, so you always start each ride at its earliest opening.", "Then the total time for land→water is max(landFinish, waterStart) + waterDur, which is either landFinish+waterDur (if water opens early) or waterStart+waterDur (if water opens later).", "Now you see you need the minimum over all water rides of either a constant plus waterDur (for early opens) or waterStart+waterDur (for late opens); sorting lets you get the minimum of each group with a prefix min of durations and a suffix min of start+duration.", "Do the same for water→land and take the overall minimum."], "how_to_start": ["If stuck, write the O(nm) brute force to confirm the formula.", "Then sort one list and think about how to answer “what’s the best water ride for a given land finish?” in sub‑linear time."], "plan": ["Compute arrays landFinish = landStart+landDuration and waterFinish = waterStart+waterDuration.", "Sort water rides by start time; build prefix min of waterDuration and suffix min of (start+duration).", "For each landFinish, binary‑search the split in the sorted water starts and combine the two minima to get the best land→water time.", "Repeat the same process swapping land and water to get the best water→land time.", "Return the smallest of the two results."], "starter_code": {"language": "python", "code": "def best(finish, starts, pref_min_dur, suff_min_sd):  # core loop ≤12 lines  n    import bisect  n    ans = float('inf')  n    for f in finish:  n        i = bisect.bisect_right(starts, f)  n        if i:  n            ans = min(ans, f + pref_min_dur[i-1])  n        if i < len(starts):  n            ans = min(ans, suff_min_sd[i])  n    return ans"}, "complexity": "O((n+m) log (n+m))", "checklist": "see min over pairs with max+add → think sort+prefix/suffix+binary"}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive: double loop O(n*m) recomputes max+add for every pair, no reuse", "Gold: sort one list, build prefix/suffix minima, answer each finish with binary search O((n+m)log(n+m))", "Switch when n*m grows beyond a few thousand or when you see repeated max(start+dur, otherStart) pattern"], "trigger": "Notice the finish time formula splits into two monotonic cases based on whether the other ride starts before or after the first ride finishes", "quiz": [{"question": "Why does sorting the partner rides by start time let us replace the inner loop with a prefix min of durations and a suffix min of (start+duration)?", "answer": "After sorting, all rides with start ≤ current finish form a prefix where the extra wait is zero, so total = finish + duration; the minimum duration in that prefix gives the best case. Rides with start > finish form a suffix where wait = start‑finish, so total = start+duration; the minimum start+duration in that suffix gives the best case.", "hint": "Think about what the max(...) becomes in each region and how that isolates a term that depends only on the partner ride."}, {"question": "What would break the prefix/suffix trick if we could not assume each ride starts at its earliest opening time?", "answer": "If we could delay a ride, the finish time would no longer be a simple function of start+duration; the wait term could depend on chosen delay, destroying the monotonic split needed for prefix/suffix minima.", "hint": "Consider whether the expression max(start+dur, otherStart) + otherDur still separates into two independent parts when start is variable."}]}</script>
+        <div id="artifact-naive-data" class="hidden">{&quot;complexity&quot;: &quot;O(n*m) time, O(1) extra space&quot;, &quot;pattern&quot;: &quot;Brute force pair enumeration&quot;, &quot;starter_code&quot;: &quot;def earliestFinishTime(landStart, landDur, waterStart, waterDur):\n    best = float(&#x27;inf&#x27;)\n    for i in range(len(landStart)):\n        for j in range(len(waterStart)):\n            # land then water\n            t = landStart[i] + landDur[i]\n            t = max(t, waterStart[j]) + waterDur[j]\n            best = min(best, t)\n            # water then land\n            t = waterStart[j] + waterDur[j]\n            t = max(t, landStart[i]) + landDur[i]\n            best = min(best, t)\n    return best&quot;, &quot;takeaway&quot;: &quot;When constraints are tiny, brute force is acceptable; avoid if input size grows&quot;, &quot;why_obvious&quot;: &quot;Try every land ride then every water ride (or vice versa) and compute finish time&quot;, &quot;why_stalls&quot;: [&quot;n,m up to 100 =&gt; 10^4 combos, but naive double loop over all pairs for each order yields O(n*m) which is fine, but if we also consider ordering we might double work&quot;, &quot;Repeatedly recomputes max(start_time, finish_time) for each pair without early pruning&quot;]}</div>
+        <div id="artifact-gold-data" class="hidden">{&quot;pattern&quot;: &quot;Sort + Prefix/Suffix Min + Binary Search&quot;, &quot;concept&quot;: &quot;First, notice that delaying a ride never helps, so each ride starts at its earliest opening time. This turns the finish time for a pair into a simple formula that depends only on the ride’s finish time and the other ride’s start time and duration. After sorting one list by start time, we can pre‑compute the best duration for all rides that start before a given point (prefix min) and the best (start+duration) for rides that start after (suffix min). Then for each possible finish time we binary‑search the split point and combine the two minima in O(log n).&quot;, &quot;properties&quot;: [&quot;The finish time expression splits into two cases based on whether the other ride’s start time is ≤ or &gt; the current ride’s finish time.&quot;, &quot;Both cases become monotonic after sorting by start time, allowing prefix/suffix minima.&quot;, &quot;Constraints are small but the pattern gives O((n+m) log (n+m)) instead of brute O(nm).&quot;], &quot;triggers&quot;: [&quot;Need to minimize over pairs a formula involving max(start1+dur1, start2) + dur2 (or symmetric).&quot;, &quot;Start times and durations are independent positive integers ≤ 1000.&quot;, &quot;Sorting one list lets us answer “best partner” queries with a binary search.&quot;], &quot;first_principles&quot;: [&quot;Imagine you realize waiting to start a ride only makes you finish later, so you always start each ride at its earliest opening.&quot;, &quot;Then the total time for land→water is max(landFinish, waterStart) + waterDur, which is either landFinish+waterDur (if water opens early) or waterStart+waterDur (if water opens later).&quot;, &quot;Now you see you need the minimum over all water rides of either a constant plus waterDur (for early opens) or waterStart+waterDur (for late opens); sorting lets you get the minimum of each group with a prefix min of durations and a suffix min of start+duration.&quot;, &quot;Do the same for water→land and take the overall minimum.&quot;], &quot;how_to_start&quot;: [&quot;If stuck, write the O(nm) brute force to confirm the formula.&quot;, &quot;Then sort one list and think about how to answer “what’s the best water ride for a given land finish?” in sub‑linear time.&quot;], &quot;plan&quot;: [&quot;Compute arrays landFinish = landStart+landDuration and waterFinish = waterStart+waterDuration.&quot;, &quot;Sort water rides by start time; build prefix min of waterDuration and suffix min of (start+duration).&quot;, &quot;For each landFinish, binary‑search the split in the sorted water starts and combine the two minima to get the best land→water time.&quot;, &quot;Repeat the same process swapping land and water to get the best water→land time.&quot;, &quot;Return the smallest of the two results.&quot;], &quot;starter_code&quot;: {&quot;language&quot;: &quot;python&quot;, &quot;code&quot;: &quot;def best(finish, starts, pref_min_dur, suff_min_sd):  # core loop ≤12 lines  n    import bisect  n    ans = float(&#x27;inf&#x27;)  n    for f in finish:  n        i = bisect.bisect_right(starts, f)  n        if i:  n            ans = min(ans, f + pref_min_dur[i-1])  n        if i &lt; len(starts):  n            ans = min(ans, suff_min_sd[i])  n    return ans&quot;}, &quot;complexity&quot;: &quot;O((n+m) log (n+m))&quot;, &quot;checklist&quot;: &quot;see min over pairs with max+add → think sort+prefix/suffix+binary&quot;}</div>
+        <div id="artifact-align-data" class="hidden">{&quot;contrast&quot;: [&quot;Naive: double loop O(n*m) recomputes max+add for every pair, no reuse&quot;, &quot;Gold: sort one list, build prefix/suffix minima, answer each finish with binary search O((n+m)log(n+m))&quot;, &quot;Switch when n*m grows beyond a few thousand or when you see repeated max(start+dur, otherStart) pattern&quot;], &quot;trigger&quot;: &quot;Notice the finish time formula splits into two monotonic cases based on whether the other ride starts before or after the first ride finishes&quot;, &quot;quiz&quot;: [{&quot;question&quot;: &quot;Why does sorting the partner rides by start time let us replace the inner loop with a prefix min of durations and a suffix min of (start+duration)?&quot;, &quot;answer&quot;: &quot;After sorting, all rides with start ≤ current finish form a prefix where the extra wait is zero, so total = finish + duration; the minimum duration in that prefix gives the best case. Rides with start &gt; finish form a suffix where wait = start‑finish, so total = start+duration; the minimum start+duration in that suffix gives the best case.&quot;, &quot;hint&quot;: &quot;Think about what the max(...) becomes in each region and how that isolates a term that depends only on the partner ride.&quot;}, {&quot;question&quot;: &quot;What would break the prefix/suffix trick if we could not assume each ride starts at its earliest opening time?&quot;, &quot;answer&quot;: &quot;If we could delay a ride, the finish time would no longer be a simple function of start+duration; the wait term could depend on chosen delay, destroying the monotonic split needed for prefix/suffix minima.&quot;, &quot;hint&quot;: &quot;Consider whether the expression max(start+dur, otherStart) + otherDur still separates into two independent parts when start is variable.&quot;}]}</div>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/earliest-finish-time-for-land-and-water-rides-i/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const v=document.getElementById('viz');if(!v)return;v.innerHTML='<div class="flex gap-1">'+[0,1,2,3,4,5].map(i=>`<div data-i="${i}" class="w-7 h-7 rounded border border-slate-600 bg-slate-800 flex items-center justify-center text-[10px]">${i}</div>`).join('')+'</div>';let pos=0,dir=1;setInterval(()=>{v.querySelectorAll('[data-i]').forEach(el=>{const i=parseInt(el.getAttribute('data-i'));const on=i>=pos&&i<pos+2;el.className=on?'w-7 h-7 rounded bg-blue-600 text-white flex items-center justify-center text-[10px]':'w-7 h-7 rounded border border-slate-600 bg-slate-800 flex items-center justify-center text-[10px]'});pos+=dir;if(pos>4||pos<0)dir*=-1},900);v.parentElement.addEventListener('click',()=>{pos=0})})();
+</script>
+</body></html>
