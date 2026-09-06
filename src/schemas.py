@@ -37,6 +37,10 @@ GOLD_SCHEMA = {
         "type": "object",
         "properties": {
             "pattern": {"type": "string", "description": "Gold pattern name, most reusable"},
+            "concept": {
+                "type": "string",
+                "description": "Beginner-friendly 2-3 sentence explanation of pattern assuming no experience, conversational tone, what it does in plain English",
+            },
             "properties": {
                 "type": "array",
                 "items": {"type": "string"},
@@ -45,12 +49,12 @@ GOLD_SCHEMA = {
             "triggers": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "3 tight bullets: wording/constraints that scream this pattern",
+                "description": "3 tight bullets: wording/constraints that scream this pattern vs distractor",
             },
             "first_principles": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "2-3 steps from first principles how you build up insight that this pattern fits",
+                "description": "2-3 conversational steps as if telling a student how they could have derived insight themselves from scratch, beginner-friendly",
             },
             "how_to_start": {
                 "type": "array",
@@ -64,10 +68,10 @@ GOLD_SCHEMA = {
             },
             "starter_code": {
                 "type": "object",
-                "description": "Optional code block; use null if not needed",
+                "description": "Optional code block; use null if not needed. MUST be valid Python with real newlines, not /n, ast.parse-able",
                 "properties": {
                     "language": {"type": "string", "description": "e.g. python"},
-                    "code": {"type": "string", "description": "≤12 line skeleton, core loop only"},
+                    "code": {"type": "string", "description": "≤12 line skeleton, core loop only, valid Python with newlines"},
                 },
                 "required": ["language", "code"],
             },
@@ -76,6 +80,7 @@ GOLD_SCHEMA = {
         },
         "required": [
             "pattern",
+            "concept",
             "properties",
             "triggers",
             "first_principles",

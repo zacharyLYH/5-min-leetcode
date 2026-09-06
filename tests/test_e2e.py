@@ -29,9 +29,10 @@ FAKE_NAIVE = {
 
 FAKE_GOLD = {
     "pattern": "Hash Map One Pass",
+    "concept": "A hash map is just a lookup table. If you remember what you've seen, you can ask 'do I already have the number I need?' instantly instead of scanning again.",
     "properties": ["Need pair sum target, unsorted array", "Complement lookup can be O(1) with hash"],
     "triggers": ["target sum", "pair exists", "need O(n)"],
-    "first_principles": ["Need O(n): avoid nested loops", "Observe complement target-x decides answer -> store seen"],
+    "first_principles": ["Imagine you see numbers one by one — you could remember each in a table", "When you need target-x, check the table first before scanning the rest", "That check is O(1), so whole pass becomes O(n)"],
     "how_to_start": ["Ask: can I store seen?", "Use complement"],
     "plan": ["Iterate", "Check complement", "Insert"],
     "starter_code": {"language": "python", "code": "def two_sum(nums, target):\n    seen={}\n    for i,x in enumerate(nums):\n        if target-x in seen:\n            return [seen[target-x], i]\n        seen[x]=i\n    return []"},

@@ -37,7 +37,16 @@ open preview.html # opens up the preview.html generated. this is what the gh pag
 2. **No token needed:** `GITHUB_TOKEN` is auto-provided by Actions — just use `github_token: ${{ secrets.GITHUB_TOKEN }}` in `.github/workflows/daily.yml:23` (already set).
 3. **Deploy:** Daily cron (`0 0 * * *` 8am SGT) + `workflow_dispatch` runs `python -u -m src.main`, writes `site/<slug>/index.html`, then `peaceiris/actions-gh-pages@v4` pushes `publish_dir: ./site` to `gh-pages` with `keep_files: true` (keeps archive).
 4. **URL:** `https://zacharylyh.github.io/5-min-leetcode/<titleSlug>/` (e.g. `.../two-sum/`). Email CTA points there; inbox is not full lesson.
-5. **First run:** `gh-pages` branch auto-created on first successful deploy. For fork, update `HOSTED_BASE` in `src/main.py:13` if different user/repo.
+5. **First run is expected to log:**
+   ```
+   fatal: Remote branch gh-pages not found in upstream origin
+   [INFO] first deployment, create new branch gh-pages
+   To https://github.com/...git
+    * [new branch] gh-pages -> gh-pages
+   [INFO] Action successfully completed
+   ```
+   `fatal: not found` + `checkout --orphan gh-pages` is normal for first deploy. The `Create a pull request for 'gh-pages'...` line after `git push` is just Git's generic hint for any new branch — **no PR needed**, ignore. After this, Settings → Pages will show `Your site is live...` at the URL above.
+6. **Next runs:** No PR, just updates `gh-pages` (`keep_files: true` keeps archive). For fork, update `HOSTED_BASE` in `src/main.py:13` if different user/repo.
 
 ### Env
 

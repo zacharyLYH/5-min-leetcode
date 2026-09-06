@@ -1,7 +1,6 @@
 import html as html_lib
 import json as _json
 
-# shadcn + Tailwind, dark-first, mobile-first, KISS. Wordy content chunked via tabs/details, break-words, responsive.
 TEMPLATE = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -27,24 +26,36 @@ TEMPLATE = """<!doctype html>
   </div>
 </header>
 <main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
-  <!-- Problem: keep short, clamp, link out -->
+  <!-- Progress: 5-min read -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-600 w-1/3"></div></div>
+
   <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="p-4 sm:p-5">
       <h2 class="font-semibold text-sm">Problem</h2>
-      <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words">{problem_html}</div>
-      <a href="{url}" target="_blank" class="sm:hidden inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words">{problem_html}</div>
+      </details>
+      <a href="{url}" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
     </div>
   </div>
 
-  <!-- TL;DR: 2 bullets max, high contrast -->
   <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
     <div class="p-4 sm:p-5">
-      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR</h2>
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
       <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words">{summary_html}</div>
     </div>
   </div>
 
-  <!-- Tabs: Naive vs Gold — less wall, pick one -->
+  <!-- Visual: functional, not cosmetic, pattern in motion -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — {pattern}</div>
+      <div id="viz" class="mt-3 flex items-center justify-center gap-1 h-12 font-mono text-xs"></div>
+      <div class="text-[10px] opacity-40 text-center mt-1">watch the pattern move • tap to replay</div>
+    </div>
+  </div>
+
   <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
       <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Naive Solution</button>
@@ -57,8 +68,6 @@ TEMPLATE = """<!doctype html>
       <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]">{gold}</div>
     </div>
   </div>
-
-  {code_blocks}
 
   <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
     <div class="p-4 sm:p-5">
@@ -75,7 +84,6 @@ TEMPLATE = """<!doctype html>
     </div>
   </div>
 
-  <!-- obscure artifacts for future scraping — deterministic ids, collapsed -->
   <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
     <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
       <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
@@ -98,6 +106,7 @@ function toggleDark(){{document.documentElement.classList.toggle('dark');localSt
 function copyCode(id){{const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}}
 function toggleAnswer(id){{document.getElementById(id).classList.toggle('hidden')}}
 function showTab(which){{document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}}
+(function(){{const v=document.getElementById('viz');if(!v)return;v.innerHTML='<div class="flex gap-1">'+[0,1,2,3,4,5].map(i=>`<div data-i="${{i}}" class="w-7 h-7 rounded border border-slate-600 bg-slate-800 flex items-center justify-center text-[10px]">${{i}}</div>`).join('')+'</div>';let pos=0,dir=1;setInterval(()=>{{v.querySelectorAll('[data-i]').forEach(el=>{{const i=parseInt(el.getAttribute('data-i'));const on=i>=pos&&i<pos+2;el.className=on?'w-7 h-7 rounded bg-blue-600 text-white flex items-center justify-center text-[10px]':'w-7 h-7 rounded border border-slate-600 bg-slate-800 flex items-center justify-center text-[10px]'}});pos+=dir;if(pos>4||pos<0)dir*=-1}},900);v.parentElement.addEventListener('click',()=>{{pos=0}})}})();
 </script>
 </body></html>
 """
@@ -105,7 +114,17 @@ function showTab(which){{document.querySelectorAll('.tab-panel').forEach(e=>e.cl
 def _clean(s: str) -> str:
     return str(s).replace("$","")
 
+def _norm_code(code: str) -> str:
+    # fix LLM bug where "/n" appears instead of "\n" (slash-n vs backslash-n)
+    if "/n" in code and "\n" not in code:
+        code = code.replace("/n", "\n")
+    # also handle escaped "\\n" literal
+    if "\\n" in code and "\n" not in code:
+        code = code.replace("\\n", "\n")
+    return code
+
 def _code_block(code: str, lang: str = "python", block_id: str = "code") -> str:
+    code = _norm_code(code)
     if not code.strip():
         return ""
     esc = html_lib.escape(code)
@@ -131,49 +150,59 @@ def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
     if trigger:
         summary_html += f"<div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> {html_lib.escape(trigger)}</div>"
 
-    # Naive: keep ultra concise, single card not 2-col wall
+    # naive - code embedded inside panel, not global
+    n_code = ""
+    sc_n = naive.get("starter_code")
+    if isinstance(sc_n, str) and sc_n.strip():
+        n_code = _code_block(sc_n, "python", "naive-code")
+    elif isinstance(sc_n, dict) and str(sc_n.get("code") or "").strip():
+        n_code = _code_block(str(sc_n.get("code")), str(sc_n.get("language") or "python"), "naive-code")
+
     n_parts = []
     n_parts.append(f"<div class='font-medium'>{html_lib.escape(_clean(str(naive.get('pattern',''))))} <span class='opacity-60'>— {html_lib.escape(_clean(str(naive.get('why_obvious',''))))}</span></div>")
     stalls = naive.get("why_stalls") or []
     if stalls:
         n_parts.append("<ul class='list-disc pl-5 mt-2 text-xs opacity-80'>" + "".join(f"<li>{html_lib.escape(_clean(str(x)))}</li>" for x in stalls) + "</ul>")
     n_parts.append(f"<div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> {html_lib.escape(_clean(str(naive.get('complexity',''))))}</div>")
-    # hide takeaway in collapsible to reduce wordiness
+    if n_code:
+        n_parts.append(n_code)
     takeaway = _clean(str(naive.get('takeaway','')))
     if takeaway:
         n_parts.append(f"<details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>{html_lib.escape(takeaway)}</div></details>")
     naive_html = "<div class='space-y-2'>" + "".join(n_parts) + "</div>"
 
-    # Gold: chunk into collapsibles, not wall
+    # gold - with concept for beginners
     g_parts = []
     g_parts.append(f"<div class='font-medium'>{html_lib.escape(_clean(str(gold.get('pattern',''))))}</div>")
+    concept = _clean(str(gold.get("concept") or ""))
+    if concept:
+        g_parts.append(f"<div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>{html_lib.escape(concept)}</div>")
     props = gold.get("properties") or []
     if props:
-        g_parts.append(f"<details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits ({len(props)})</summary><ul class='list-disc pl-5 mt-1 text-xs'>" + "".join(f"<li>{html_lib.escape(_clean(str(x)))}</li>" for x in props) + "</ul></details>")
+        g_parts.append(f"<details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits ({len(props)}) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'>" + "".join(f"<li>{html_lib.escape(_clean(str(x)))}</li>" for x in props) + "</ul></details>")
     triggers = gold.get("triggers") or []
     if triggers:
         g_parts.append(f"<details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it ({len(triggers)})</summary><ul class='list-disc pl-5 mt-1 text-xs'>" + "".join(f"<li>{html_lib.escape(_clean(str(x)))}</li>" for x in triggers) + "</ul></details>")
     fps = gold.get("first_principles") or []
     if fps:
-        g_parts.append(f"<details open><summary class='text-xs font-semibold cursor-pointer mt-2'>From first principles</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'>" + "".join(f"<li>{html_lib.escape(_clean(str(x)))}</li>" for x in fps) + "</ol></details>")
+        g_parts.append(f"<details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'>" + "".join(f"<li>{html_lib.escape(_clean(str(x)))}</li>" for x in fps) + "</ol></details>")
     plan = gold.get("plan") or []
     if plan:
         g_parts.append(f"<details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan ({len(plan)} steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'>" + "".join(f"<li>{html_lib.escape(_clean(str(x)))}</li>" for x in plan) + "</ol></details>")
     starts = gold.get("how_to_start") or []
     if starts:
-        g_parts.append("<div class='mt-2 text-xs'><span class='font-semibold'>Start:</span> " + html_lib.escape(_clean(" · ".join(str(x) for x in starts))) + "</div>")
+        g_parts.append("<div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> " + html_lib.escape(_clean(" · ".join(str(x) for x in starts))) + "</div>")
+    # gold code inside panel
+    sc_g = gold.get("starter_code")
+    g_code = ""
+    if isinstance(sc_g, dict) and str(sc_g.get("code") or "").strip():
+        g_code = _code_block(str(sc_g.get("code")), str(sc_g.get("language") or "python"), "gold-code")
+    elif isinstance(sc_g, str) and str(sc_g).strip():
+        g_code = _code_block(str(sc_g), "python", "gold-code")
+    if g_code:
+        g_parts.append(g_code)
     g_parts.append(f"<div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> {html_lib.escape(_clean(str(gold.get('complexity',''))))}</div>")
     gold_html = "<div class='space-y-2'>" + "".join(g_parts) + "</div>"
-
-    code_blocks = ""
-    sc_g = gold.get("starter_code")
-    if isinstance(sc_g, dict) and str(sc_g.get("code") or "").strip():
-        code_blocks += _code_block(str(sc_g.get("code")), str(sc_g.get("language") or "python"), "gold-code")
-    sc_n = naive.get("starter_code")
-    if isinstance(sc_n, str) and sc_n.strip():
-        code_blocks += _code_block(sc_n, "python", "naive-code")
-    elif isinstance(sc_n, dict) and str(sc_n.get("code") or "").strip():
-        code_blocks += _code_block(str(sc_n.get("code")), str(sc_n.get("language") or "python"), "naive-code")
 
     quiz = align.get("quiz") or []
     quiz_html = ""
@@ -187,8 +216,8 @@ def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
         quiz_html += f"<button onclick=\"toggleAnswer('ans-{i}')\" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-{i}' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>{ans}</div></div>"
 
     checklist = html_lib.escape(_clean(str(gold.get("checklist",""))))
+    pattern = html_lib.escape(_clean(str(gold.get("pattern") or "Pattern")))
 
-    # deterministic artifacts for scraping — raw JSON, escaped for script
     def _dump(obj: dict) -> str:
         raw = _json.dumps(obj, ensure_ascii=False)
         return raw.replace("</", "<\\/")
@@ -201,7 +230,7 @@ def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
         title=title, difficulty=html_lib.escape(_clean(diff)), difficulty_bg=diff_bg,
         topic_tags=topic_tags, url=url, problem_html=problem_html,
         summary_html=summary_html, naive=naive_html, gold=gold_html,
-        code_blocks=code_blocks, quiz_html=quiz_html, checklist=checklist, slug=slug,
+        quiz_html=quiz_html, checklist=checklist, slug=slug, pattern=pattern,
         naive_json=naive_json, gold_json=gold_json, align_json=align_json,
         naive_json_esc=html_lib.escape(naive_json), gold_json_esc=html_lib.escape(gold_json), align_json_esc=html_lib.escape(align_json),
     )

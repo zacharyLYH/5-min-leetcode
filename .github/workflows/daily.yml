@@ -2,7 +2,7 @@ name: daily-leetcode
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # 8am SGT
+    - cron: '*/5 * * * *'  # test every 15m — revert to '0 0 * * *' (8am SGT) after verify
   workflow_dispatch:
 
 jobs:
