@@ -6,11 +6,11 @@ Problem:
 Be brutally succinct. Fragments ok. Sacrifice grammar to stay tight. No fluff.
 
 Explain naive pattern learner naturally tries:
-- pattern name
-- why obvious (1 line)
-- why stalls (2 tight bullets — input size / repeated work)
+- pattern name (plain)
+- why obvious (1 line, plain)
+- why stalls (2 tight bullets — input size / repeated work, plain)
 - complexity (e.g. O(n*n) plain, no LaTeX $)
-- tiny 5-10 line Python sketch — MUST be valid Python with newlines + indent, ast.parse-able, not minified (exempt from succinctness)
-- 1-line takeaway: when to ditch
+- tiny 5-10 line Python sketch — MUST be valid Python with newlines + indent, ast.parse-able, NOT minified, NOT single-line with semicolons (exempt from succinctness). Each statement on its own line.
+- 1-line takeaway: plain sentence, when to ditch
 
 Use plain k not $k$. Structured output enforces JSON — just write clearly, don't list JSON.

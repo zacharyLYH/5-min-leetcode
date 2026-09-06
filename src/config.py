@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 try:
@@ -16,8 +18,7 @@ def env(name: str, default: str | None = None, required: bool = False) -> str | 
 
 def _require(name: str) -> str:
     v = env(name, required=True)
-    assert v is not None  # for pyright
-    return v
+    return v  # type: ignore[return-value]
 
 
 class Settings:
@@ -26,15 +27,15 @@ class Settings:
         self.model_provider: str = _require("MODEL_PROVIDER").rstrip("/")
         self.model_name: str = _require("MODEL_NAME")
         self.smtp_host: str = _require("SMTP_HOST")
-        self.smtp_port: int = int(env("SMTP_PORT", "587") or "587")
+        self.smtp_port: int = int(env("SMTP_PORT", "587"))  # type: ignore[arg-type]
         self.smtp_user: str = _require("SMTP_USER")
         self.smtp_password: str = _require("SMTP_PASSWORD")
         self.smtp_from: str = _require("SMTP_FROM")
 
     def load_recipients(self) -> list[str]:
-        from .subscribers import load_subscribers
+        from .subscribers import load_subscribers as _load
 
-        return load_subscribers("subscribers.csv")
+        return _load("subscribers.csv")
 
     def __repr__(self) -> str:
         return f"Settings(model={self.model_name}, provider={self.model_provider})"

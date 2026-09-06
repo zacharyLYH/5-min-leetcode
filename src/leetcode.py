@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import requests
 
 GRAPHQL_URL = "https://leetcode.com/graphql"
@@ -45,6 +47,8 @@ def fetch_random_problem(max_tries: int = 10) -> dict:
     """Returns dict with title, titleSlug, difficulty, content, topicTags, url.
     Skips premium (isPaidOnly) / empty content problems.
     """
+    import time as _time
+
     last_err: Exception | None = None
     for attempt in range(1, max_tries + 1):
         try:
@@ -71,5 +75,7 @@ def fetch_random_problem(max_tries: int = 10) -> dict:
             return q
         except Exception as e:  # noqa: BLE001
             last_err = e
+            if attempt < max_tries:
+                _time.sleep(0.5 * attempt)
             continue
     raise RuntimeError(f"failed to fetch free problem after {max_tries} tries: {last_err}")

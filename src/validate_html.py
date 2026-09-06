@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Best-effort HTML validation.
 
 No tool can 100% guarantee "complete/correct" HTML (HTML is forgiving),
@@ -19,8 +21,8 @@ VOID = {
 REQUIRED_FRAGMENTS = [
     "5-min LeetCode",
     "View on LeetCode",
-    "Naive Solution",
-    "Gold Pattern",
+    "Your first idea",
+    "Better pattern",
 ]
 
 

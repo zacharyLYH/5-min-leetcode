@@ -1,13 +1,19 @@
+from __future__ import annotations
+
 import argparse
+import ast
+import concurrent.futures as _fut
 import json
 import pathlib
 import sys
+import traceback
+
 from .config import Settings
 from .leetcode import fetch_random_problem
 from .llm import call_llm, call_llm_structured, make_client, render_prompt
 from .emailer import build_email, send_batch
-from .schemas import ALIGN_SCHEMA, GOLD_SCHEMA, NAIVE_SCHEMA
-from .site_builder import build_full_page
+from .schemas import ALIGN_SCHEMA, GOLD_SCHEMA, NAIVE_SCHEMA, VIZ_SCHEMA
+from .site_builder import _prettify_code, build_full_page
 from .validate_html import validate_html
 
 PROMPT_DIR = pathlib.Path(__file__).parent.parent / "prompts"
@@ -23,8 +29,6 @@ def load_prompt(name: str) -> str:
 
 
 def _code_ok(data: dict) -> bool:
-    import ast
-
     sc = data.get("starter_code")
     code = ""
     if isinstance(sc, dict):
@@ -52,13 +56,32 @@ def _get_structured(client, model, prompt, schema) -> dict:
         raise
 
 
+def _fix_code(data: dict) -> dict:
+    sc = data.get("starter_code")
+    if isinstance(sc, str) and sc.strip():
+        fixed = _prettify_code(sc)
+        if fixed != sc:
+            data = dict(data)
+            data["starter_code"] = fixed
+    elif isinstance(sc, dict) and str(sc.get("code") or "").strip():
+        fixed = _prettify_code(str(sc.get("code")))
+        if fixed != str(sc.get("code")):
+            data = dict(data)
+            sc2 = dict(sc)
+            sc2["code"] = fixed
+            data["starter_code"] = sc2
+    return data
+
+
 def _get_with_code_check(client, model, prompt, schema, label: str) -> dict:
     data = _get_structured(client, model, prompt, schema)
+    data = _fix_code(data)
     if _code_ok(data):
         return data
     print(f"  ⚠ {label} code failed ast.parse or minified, retrying...", file=sys.stderr)
-    retry_prompt = prompt + "\n\n[RETRY: starter_code must be valid Python with newlines+indent, ast.parse-able, not single-line. Fix only that field.]"
+    retry_prompt = prompt + "\n\n[RETRY: starter_code must be valid Python with newlines+indent, ast.parse-able, not single-line with semicolons. Each statement on its own line. Fix only that field.]"
     data2 = _get_structured(client, model, retry_prompt, schema)
+    data2 = _fix_code(data2)
     if not _code_ok(data2):
         print(f"  ⚠ {label} still invalid after retry, keeping anyway", file=sys.stderr)
     return data2
@@ -83,14 +106,37 @@ def main() -> None:
     naive_tpl = load_prompt("naive.txt")
     gold_tpl = load_prompt("gold.txt")
     align_tpl = load_prompt("align_html.txt")
+    visual_tpl = load_prompt("visual.txt")
 
-    print("→ Generating naive lesson (structured JSON 1/3)...")
-    naive: dict = _get_with_code_check(client, settings.model_name, render_prompt(naive_tpl, problem), NAIVE_SCHEMA, "naive")
+    print("→ Generating naive+gold lessons (parallel 1/4 + 2/4)...")
+    with _fut.ThreadPoolExecutor(max_workers=2) as _ex:
+        _f_naive = _ex.submit(
+            _get_with_code_check, client, settings.model_name, render_prompt(naive_tpl, problem), NAIVE_SCHEMA, "naive"
+        )
+        _f_gold = _ex.submit(
+            _get_with_code_check, client, settings.model_name, render_prompt(gold_tpl, problem), GOLD_SCHEMA, "gold"
+        )
+        naive = _f_naive.result()
+        gold = _f_gold.result()
     print(f"  naive pattern: {naive.get('pattern')}")
-
-    print("→ Generating gold lesson (structured JSON 2/3)...")
-    gold: dict = _get_with_code_check(client, settings.model_name, render_prompt(gold_tpl, problem), GOLD_SCHEMA, "gold")
     print(f"  gold pattern: {gold.get('pattern')}")
+
+    print("→ Generating visual (structured JSON 3/4)...")
+    visual: dict = {}
+    try:
+        visual_prompt = render_prompt(
+            visual_tpl,
+            problem,
+            extra={
+                "gold_pattern": str(gold.get("pattern") or ""),
+                "gold_concept": str(gold.get("concept") or ""),
+            },
+        )
+        visual = _get_structured(client, settings.model_name, visual_prompt, VIZ_SCHEMA)
+        print(f"  visual html: {len(str(visual.get('html') or ''))} chars")
+    except Exception as e:  # noqa: BLE001
+        print(f"  ⚠ visual generation failed, using fallback: {e}", file=sys.stderr)
+        visual = {"html": ""}
 
     # alignment (structured) + build full page + validate in retry loop
     align_prompt_base = render_prompt(
@@ -100,7 +146,7 @@ def main() -> None:
     align: dict = {}
     issues: list[str] = []
     for attempt in range(1, MAX_ALIGN_ATTEMPTS + 1):
-        print(f"→ Generating alignment (structured JSON 3/3, attempt {attempt}/{MAX_ALIGN_ATTEMPTS})...")
+        print(f"→ Generating alignment (structured JSON 4/4, attempt {attempt}/{MAX_ALIGN_ATTEMPTS})...")
         prompt = align_prompt_base
         if attempt > 1:
             prompt += f"\n\n[RETRY {attempt}: previous HTML failed validation {issues} — keep JSON tight, succinct.]"
@@ -108,7 +154,7 @@ def main() -> None:
         print(f"  align contrast: {len(align.get('contrast', []))} bullets, quiz: {len(align.get('quiz', []))}")
 
         print("→ Building full page (Tailwind)...")
-        full_html = build_full_page(problem, naive, gold, align)
+        full_html = build_full_page(problem, naive, gold, align, visual)
 
         print("→ Validating HTML...")
         ok, issues = validate_html(full_html)
@@ -154,8 +200,6 @@ if __name__ == "__main__":
     try:
         main()
     except Exception as e:
-        import traceback
-
         print(f"✗ Failed: {e}", file=sys.stderr)
         traceback.print_exc()
         sys.exit(1)

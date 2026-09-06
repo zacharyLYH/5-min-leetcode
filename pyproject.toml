@@ -1,7 +1,7 @@
 [tool.pyright]
 typeCheckingMode = "basic"
 venvPath = "."
-venv = "."
+venv = ".venv"
 
 [project]
 name = "5-min-leetcode"

@@ -3,20 +3,14 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from .utils import clean as _clean
 
-def _clean(s: str) -> str:
-    return str(s).replace("$", "")
+
+_DIFF_COLOR = {"easy": "#16a34a", "medium": "#d97706", "hard": "#dc2626"}
 
 
 def difficulty_color(d: str) -> str:
-    d = (d or "").lower()
-    if d == "easy":
-        return "#16a34a"
-    if d == "medium":
-        return "#d97706"
-    if d == "hard":
-        return "#dc2626"
-    return "#64748b"
+    return _DIFF_COLOR.get((d or "").lower(), "#64748b")
 
 
 EMAIL_TEMPLATE = """<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#f8fafc;font-family:sans-serif">
@@ -40,10 +34,7 @@ EMAIL_TEMPLATE = """<!DOCTYPE html><html><head><meta charset="utf-8"></head><bod
 def build_email(problem: dict, align: dict, hosted_url: str) -> str:
     title = html_lib.escape(_clean(str(problem.get("title") or "")))
     diff = str(problem.get("difficulty") or "")
-    raw_tags = problem.get("topicTags") or []
-    if raw_tags and isinstance(raw_tags[0], dict):
-        raw_tags = [t.get("name", "") for t in raw_tags]  # type: ignore
-    topic_tags = html_lib.escape(", ".join(str(t) for t in raw_tags))
+    topic_tags = html_lib.escape(", ".join(str(t) for t in (problem.get("topicTags") or [])))
     contrast = align.get("contrast") or []
     summary = " · ".join(_clean(str(x)) for x in contrast[:2]) if contrast else html_lib.escape(_clean(str(align.get("trigger", ""))))
     if not summary:
@@ -69,19 +60,15 @@ def _send_one(settings, to: str, subject: str, html_body: str) -> None:
     msg["From"] = settings.smtp_from
     msg["To"] = to
     msg["Subject"] = subject
-    text = "View this email in an HTML-capable client. " + html_body[:200]
-    msg.attach(MIMEText(text, "plain"))
+    msg.attach(MIMEText("View this email in an HTML-capable client. " + html_body[:200], "plain"))
     msg.attach(MIMEText(html_body, "html"))
-    if settings.smtp_port == 465:
-        with smtplib.SMTP_SSL(settings.smtp_host, settings.smtp_port) as s:
-            s.login(settings.smtp_user, settings.smtp_password)
-            s.sendmail(settings.smtp_from, [to], msg.as_string())
-    else:
-        with smtplib.SMTP(settings.smtp_host, settings.smtp_port) as s:
+    smtp_cls = smtplib.SMTP_SSL if settings.smtp_port == 465 else smtplib.SMTP  # type: ignore
+    with smtp_cls(settings.smtp_host, settings.smtp_port) as s:  # type: ignore
+        if settings.smtp_port != 465:
             s.ehlo()
             s.starttls()
-            s.login(settings.smtp_user, settings.smtp_password)
-            s.sendmail(settings.smtp_from, [to], msg.as_string())
+        s.login(settings.smtp_user, settings.smtp_password)
+        s.sendmail(settings.smtp_from, [to], msg.as_string())
 
 
 def send_batch(settings, subject: str, html_body: str, recipients: list[str]) -> dict[str, str]:

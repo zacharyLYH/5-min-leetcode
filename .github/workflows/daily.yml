@@ -2,7 +2,7 @@ name: daily-leetcode
 
 on:
   schedule:
-    - cron: '*/30 * * * *'  # test every 15m — revert to '0 0 * * *' (8am SGT) after verify
+    - cron: '0 0 * * *'  # 8am SGT
   workflow_dispatch:
 
 jobs:
@@ -15,10 +15,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
       - run: pip install -r requirements.txt
-      - run: python -u -m src.main
+      - run: python -m src.main
         env:
-          PYTHONUNBUFFERED: '1'
           MODEL_PROVIDER_KEY: ${{ secrets.MODEL_PROVIDER_KEY }}
           MODEL_PROVIDER: ${{ secrets.MODEL_PROVIDER }}
           MODEL_NAME: ${{ secrets.MODEL_NAME }}
@@ -35,10 +35,10 @@ jobs:
           publish_dir: ./site
           keep_files: true
           publish_branch: gh-pages
-      - name: Upload preview on failure
+      - name: Upload site on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: preview-html
-          path: preview.html
+          name: site-preview
+          path: site
           if-no-files-found: ignore

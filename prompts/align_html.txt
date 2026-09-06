@@ -1,13 +1,13 @@
-Sharp, terse. Turn two lessons into contrast + insight quiz. Fragments ok. Sacrifice grammar.
+Sharp, plain English for beginners (no jargon like prefix/suffix/mono — if you must, explain in plain words). Turn two lessons into contrast + insight quiz. Fragments ok. Sacrifice grammar but not clarity.
 
 Problem: {{title}} [{{difficulty}}] {{url}}
 Naive: {{naive}}
 Gold: {{gold}}
 
 Give:
-- contrast: 2-3 bullets naive vs gold, when to switch
-- trigger: #1 trigger to spot gold next time
-- quiz: 2 Qs that test *insight about pattern* — ask to apply reasoning, not define terms (e.g. "Why does property X allow pattern Y here? What breaks if X missing?"). Each with answer + hint that nudges thinking.
+- contrast: 2-3 bullets naive vs gold, when to switch — plain words, e.g. "First tries every pair (slow). Better keeps a table so lookup is instant."
+- trigger: #1 trigger to spot gold next time — full plain sentence, no shorthand (e.g. "If you need a pair that adds to target, try remembering what you've seen")
+- quiz: 2 Qs that test *insight about pattern* — ask to apply reasoning, not define terms (e.g. "Why does property X allow pattern Y here? What breaks if X missing?"). Each with answer + hint that nudges thinking. Use plain words.
 
 Don't mention other LeetCode problems for generalization.
 Structured output enforces JSON — just write clearly. Template renders HTML.

@@ -1,5 +1,11 @@
+from __future__ import annotations
+
+import ast as _ast
 import html as html_lib
 import json as _json
+import re as _re
+
+from .utils import clean as _clean
 
 TEMPLATE = """<!doctype html>
 <html lang="en"><head>
@@ -26,8 +32,8 @@ TEMPLATE = """<!doctype html>
   </div>
 </header>
 <main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
-  <!-- Progress: 5-min read -->
-  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-blue-600 w-1/3"></div></div>
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
 
   <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="p-4 sm:p-5">
@@ -47,24 +53,23 @@ TEMPLATE = """<!doctype html>
     </div>
   </div>
 
-  <!-- Visual: functional, not cosmetic, pattern in motion -->
+  <!-- Visual: LLM-generated Tailwind fragment -->
   <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
     <div class="p-4">
       <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — {pattern}</div>
-      <div id="viz" class="mt-3 flex items-center justify-center gap-1 h-12 font-mono text-xs"></div>
-      <div class="text-[10px] opacity-40 text-center mt-1">watch the pattern move • tap to replay</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]">{visual_html}</div>
     </div>
   </div>
 
   <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
     <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
-      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Naive Solution</button>
-      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Gold Pattern</button>
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
     </div>
-    <div id="panel-naive" class="tab-panel p-4 sm:p-5 hidden">
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
       <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]">{naive}</div>
     </div>
-    <div id="panel-gold" class="tab-panel p-4 sm:p-5">
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
       <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]">{gold}</div>
     </div>
   </div>
@@ -88,13 +93,10 @@ TEMPLATE = """<!doctype html>
     <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
       <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
       <div class="p-3 space-y-2">
-        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align (also -data divs)</div>
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
         <script type="application/json" id="artifact-naive">{naive_json}</script>
         <script type="application/json" id="artifact-gold">{gold_json}</script>
         <script type="application/json" id="artifact-align">{align_json}</script>
-        <div id="artifact-naive-data" class="hidden">{naive_json_esc}</div>
-        <div id="artifact-gold-data" class="hidden">{gold_json_esc}</div>
-        <div id="artifact-align-data" class="hidden">{align_json_esc}</div>
       </div>
     </details>
   </div>
@@ -106,13 +108,10 @@ function toggleDark(){{document.documentElement.classList.toggle('dark');localSt
 function copyCode(id){{const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}}
 function toggleAnswer(id){{document.getElementById(id).classList.toggle('hidden')}}
 function showTab(which){{document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}}
-(function(){{const v=document.getElementById('viz');if(!v)return;v.innerHTML='<div class="flex gap-1">'+[0,1,2,3,4,5].map(i=>`<div data-i="${{i}}" class="w-7 h-7 rounded border border-slate-600 bg-slate-800 flex items-center justify-center text-[10px]">${{i}}</div>`).join('')+'</div>';let pos=0,dir=1;setInterval(()=>{{v.querySelectorAll('[data-i]').forEach(el=>{{const i=parseInt(el.getAttribute('data-i'));const on=i>=pos&&i<pos+2;el.className=on?'w-7 h-7 rounded bg-blue-600 text-white flex items-center justify-center text-[10px]':'w-7 h-7 rounded border border-slate-600 bg-slate-800 flex items-center justify-center text-[10px]'}});pos+=dir;if(pos>4||pos<0)dir*=-1}},900);v.parentElement.addEventListener('click',()=>{{pos=0}})}})();
+(function(){{const b=document.getElementById('progress');if(!b)return;function upd(){{const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}}window.addEventListener('scroll',upd,{{passive:true}});upd()}})();
 </script>
 </body></html>
 """
-
-def _clean(s: str) -> str:
-    return str(s).replace("$","")
 
 def _norm_code(code: str) -> str:
     # fix LLM bug where "/n" appears instead of "\n" (slash-n vs backslash-n)
@@ -123,23 +122,105 @@ def _norm_code(code: str) -> str:
         code = code.replace("\\n", "\n")
     return code
 
-def _code_block(code: str, lang: str = "python", block_id: str = "code") -> str:
+def _prettify_code(code: str) -> str:
+    """Turn minified ';'-joined code into readable multi-line form."""
     code = _norm_code(code)
+    if not code.strip():
+        return code
+    # If no newlines but semicolons present, split on ';' and handle 'def foo():bar' inline bodies
+    if "\n" not in code and ";" in code:
+        parts = [p.strip() for p in code.split(";") if p.strip()]
+        out_lines: list[str] = []
+        indent = 0
+        for p in parts:
+            # If part contains ':', but code after ':' (e.g. 'def f():x=1' or 'for i in range(n):s=str(i)')
+            # split into header and body so indent is correct — only for def/for/while/with/class
+            if ":" in p and not p.rstrip().endswith(":"):
+                colon_idx = p.find(":")
+                header = p[: colon_idx + 1].strip()
+                tail = p[colon_idx + 1 :].strip()
+                low_h = header.lstrip()
+                # only split for block headers that should be multiline; keep 'if cond: continue' inline
+                if low_h.startswith(("def ", "for ", "while ", "with ", "class ")):
+                    if low_h.startswith(("else", "elif ", "except", "finally")) and indent > 0:
+                        indent -= 1
+                    out_lines.append("    " * indent + header)
+                    indent += 1
+                    if tail:
+                        low_t = tail.lstrip()
+                        if low_t.startswith(("else", "elif ", "except", "finally")) and indent > 0:
+                            indent -= 1
+                        out_lines.append("    " * indent + tail)
+                        if tail.rstrip().endswith(":"):
+                            indent += 1
+                    continue
+                # for if/elif inline single statement, keep as one line
+                # fall through to normal handling
+            low = p.lstrip()
+            if low.startswith(("else", "elif ", "except", "finally")) and indent > 0:
+                indent -= 1
+            out_lines.append("    " * indent + p)
+            if p.rstrip().endswith(":"):
+                indent += 1
+        code = "\n".join(out_lines)
+    try:
+        tree = _ast.parse(code)
+        pretty = _ast.unparse(tree)  # type: ignore
+        if "\n" in code and "\n" not in pretty:
+            return code
+        return pretty
+    except Exception:
+        return code
+
+_VISUAL_BLOCKED_RE = _re.compile(r"<(script|iframe|object)\b|javascript:|on\w+\s*=", _re.IGNORECASE)
+
+
+def _sanitize_visual(html: str) -> str:
+    """Allow only safe Tailwind fragments."""
+    if not html or not html.strip():
+        return ""
+    html = html.strip()[:2000]
+    if _VISUAL_BLOCKED_RE.search(html):
+        return ""
+    low = html.lower()
+    if not any(t in low for t in ("<div", "<span", "<svg", "<p")):
+        return ""
+    return html
+
+def _dump(obj: dict) -> str:
+    raw = _json.dumps(obj, ensure_ascii=False)
+    return raw.replace("</", "<\\/")
+
+
+def _extract_code(starter_code) -> tuple[str, str]:
+    """Normalize naive(str) / gold(dict) starter_code to (code, lang)."""
+    if isinstance(starter_code, dict):
+        return str(starter_code.get("code") or ""), str(starter_code.get("language") or "python")
+    if isinstance(starter_code, str):
+        return starter_code, "python"
+    return "", "python"
+
+
+def _code_block(code: str, lang: str = "python", block_id: str = "code") -> str:
+    code = _prettify_code(code)
     if not code.strip():
         return ""
     esc = html_lib.escape(code)
     return f'<div class="relative mt-3"><button id="{block_id}-btn" onclick="copyCode(\'{block_id}\')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="{block_id}" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-{html_lib.escape(lang)}">{esc}</code></pre></div>'
 
-def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
+def build_full_page(problem: dict, naive: dict, gold: dict, align: dict, visual: dict | None = None) -> str:
     title = html_lib.escape(_clean(str(problem.get("title") or "")))
     diff = str(problem.get("difficulty") or "")
     diff_bg = {"easy":"bg-green-600","medium":"bg-amber-600","hard":"bg-red-600"}.get(diff.lower(),"bg-slate-600")
-    raw_tags = problem.get("topicTags") or []
-    if raw_tags and isinstance(raw_tags[0], dict):
-        raw_tags = [t.get("name","") for t in raw_tags]  # type: ignore
-    topic_tags = html_lib.escape(", ".join(str(t) for t in raw_tags))
+    topic_tags = html_lib.escape(", ".join(str(t) for t in (problem.get("topicTags") or [])))
     url = html_lib.escape(str(problem.get("url") or "#"))
-    problem_html = (problem.get("content") or "")[:9000]
+    raw_html = problem.get("content") or ""
+    if len(raw_html) > 9000:
+        cut = raw_html[:9000]
+        last = cut.rfind("</")
+        problem_html = cut[: cut.rfind(">", last) + 1] if last != -1 else cut
+    else:
+        problem_html = raw_html
     slug = html_lib.escape(str(problem.get("titleSlug") or "lesson"))
 
     contrast = align.get("contrast") or []
@@ -150,13 +231,10 @@ def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
     if trigger:
         summary_html += f"<div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> {html_lib.escape(trigger)}</div>"
 
-    # naive - code embedded inside panel, not global
     n_code = ""
-    sc_n = naive.get("starter_code")
-    if isinstance(sc_n, str) and sc_n.strip():
-        n_code = _code_block(sc_n, "python", "naive-code")
-    elif isinstance(sc_n, dict) and str(sc_n.get("code") or "").strip():
-        n_code = _code_block(str(sc_n.get("code")), str(sc_n.get("language") or "python"), "naive-code")
+    code, lang = _extract_code(naive.get("starter_code"))
+    if code.strip():
+        n_code = _code_block(code, lang, "naive-code")
 
     n_parts = []
     n_parts.append(f"<div class='font-medium'>{html_lib.escape(_clean(str(naive.get('pattern',''))))} <span class='opacity-60'>— {html_lib.escape(_clean(str(naive.get('why_obvious',''))))}</span></div>")
@@ -192,13 +270,8 @@ def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
     starts = gold.get("how_to_start") or []
     if starts:
         g_parts.append("<div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> " + html_lib.escape(_clean(" · ".join(str(x) for x in starts))) + "</div>")
-    # gold code inside panel
-    sc_g = gold.get("starter_code")
-    g_code = ""
-    if isinstance(sc_g, dict) and str(sc_g.get("code") or "").strip():
-        g_code = _code_block(str(sc_g.get("code")), str(sc_g.get("language") or "python"), "gold-code")
-    elif isinstance(sc_g, str) and str(sc_g).strip():
-        g_code = _code_block(str(sc_g), "python", "gold-code")
+    code_g, lang_g = _extract_code(gold.get("starter_code"))
+    g_code = _code_block(code_g, lang_g, "gold-code") if code_g.strip() else ""
     if g_code:
         g_parts.append(g_code)
     g_parts.append(f"<div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> {html_lib.escape(_clean(str(gold.get('complexity',''))))}</div>")
@@ -218,9 +291,14 @@ def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
     checklist = html_lib.escape(_clean(str(gold.get("checklist",""))))
     pattern = html_lib.escape(_clean(str(gold.get("pattern") or "Pattern")))
 
-    def _dump(obj: dict) -> str:
-        raw = _json.dumps(obj, ensure_ascii=False)
-        return raw.replace("</", "<\\/")
+    # visual html - sanitized raw injection (no escaping)
+    raw_visual = ""
+    if visual and isinstance(visual, dict):
+        raw_visual = str(visual.get("html") or "")
+    visual_html = _sanitize_visual(raw_visual)
+    if not visual_html:
+        # fallback: simple pattern badge when LLM fails/empty
+        visual_html = f'<div class="text-xs opacity-60 font-mono">{pattern}</div>'
 
     naive_json = _dump(naive)
     gold_json = _dump(gold)
@@ -231,6 +309,6 @@ def build_full_page(problem: dict, naive: dict, gold: dict, align: dict) -> str:
         topic_tags=topic_tags, url=url, problem_html=problem_html,
         summary_html=summary_html, naive=naive_html, gold=gold_html,
         quiz_html=quiz_html, checklist=checklist, slug=slug, pattern=pattern,
+        visual_html=visual_html,
         naive_json=naive_json, gold_json=gold_json, align_json=align_json,
-        naive_json_esc=html_lib.escape(naive_json), gold_json_esc=html_lib.escape(gold_json), align_json_esc=html_lib.escape(align_json),
     )

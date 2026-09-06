@@ -103,9 +103,9 @@ ALIGN_SCHEMA = {
             "contrast": {
                 "type": "array",
                 "items": {"type": "string"},
-                "description": "2-3 bullets contrasting naive vs gold, when to switch",
+                "description": "2-3 bullets contrasting naive vs gold, when to switch — plain English for beginners, no jargon like prefix/suffix/mono",
             },
-            "trigger": {"type": "string", "description": "#1 trigger to spot gold next time"},
+            "trigger": {"type": "string", "description": "#1 trigger to spot gold next time — plain words, e.g. 'need pair sum -> think hash'"},
             "quiz": {
                 "type": "array",
                 "items": {
@@ -125,6 +125,22 @@ ALIGN_SCHEMA = {
             },
         },
         "required": ["contrast", "trigger", "quiz"],
+        "additionalProperties": False,
+    },
+}
+
+VIZ_SCHEMA = {
+    "name": "visual",
+    "strict": True,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "html": {
+                "type": "string",
+                "description": "Tailwind HTML fragment (no <html>/<head>/<body>/<script>), ~150-400 chars, visual that teaches the pattern. Use only div/span/svg/p with Tailwind classes. Static, no JS.",
+            },
+        },
+        "required": ["html"],
         "additionalProperties": False,
     },
 }
