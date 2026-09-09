@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minimum Operations to Write the Letter Y on a Grid — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Minimum Operations to Write the Letter Y on a Grid</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-600 text-white">Medium</span>
+        <span class="text-xs text-slate-400 break-words">Array, Hash Table, Matrix, Counting</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/minimum-operations-to-write-the-letter-y-on-a-grid/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>You are given a <strong>0-indexed</strong> <code>n x n</code> grid where <code>n</code> is odd, and <code>grid[r][c]</code> is <code>0</code>, <code>1</code>, or <code>2</code>.</p>
+
+<p>We say that a cell belongs to the Letter <strong>Y</strong> if it belongs to one of the following:</p>
+
+<ul>
+	<li>The diagonal starting at the top-left cell and ending at the center cell of the grid.</li>
+	<li>The diagonal starting at the top-right cell and ending at the center cell of the grid.</li>
+	<li>The vertical line starting at the center cell and ending at the bottom border of the grid.</li>
+</ul>
+
+<p>The Letter <strong>Y</strong> is written on the grid if and only if:</p>
+
+<ul>
+	<li>All values at cells belonging to the Y are equal.</li>
+	<li>All values at cells not belonging to the Y are equal.</li>
+	<li>The values at cells belonging to the Y are different from the values at cells not belonging to the Y.</li>
+</ul>
+
+<p>Return <em>the <strong>minimum</strong> number of operations needed to write the letter Y on the grid given that in one operation you can change the value at any cell to</em> <code>0</code><em>,</em> <code>1</code><em>,</em> <em>or</em> <code>2</code><em>.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://assets.leetcode.com/uploads/2024/01/22/y2.png" style="width: 461px; height: 121px;" />
+<pre>
+<strong>Input:</strong> grid = [[1,2,2],[1,1,0],[0,1,0]]
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> We can write Y on the grid by applying the changes highlighted in blue in the image above. After the operations, all cells that belong to Y, denoted in bold, have the same value of 1 while those that do not belong to Y are equal to 0.
+It can be shown that 3 is the minimum number of operations needed to write Y on the grid.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://assets.leetcode.com/uploads/2024/01/22/y3.png" style="width: 701px; height: 201px;" />
+<pre>
+<strong>Input:</strong> grid = [[0,1,0,1,0],[2,1,0,1,2],[2,2,2,0,1],[2,2,2,2,2],[2,1,2,2,2]]
+<strong>Output:</strong> 12
+<strong>Explanation:</strong> We can write Y on the grid by applying the changes highlighted in blue in the image above. After the operations, all cells that belong to Y, denoted in bold, have the same value of 0 while those that do not belong to Y are equal to 2. 
+It can be shown that 12 is the minimum number of operations needed to write Y on the grid.</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>3 &lt;= n &lt;= 49 </code></li>
+	<li><code>n == grid.length == grid[i].length</code></li>
+	<li><code>0 &lt;= grid[i][j] &lt;= 2</code></li>
+	<li><code>n</code> is odd.</li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/minimum-operations-to-write-the-letter-y-on-a-grid/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>The naïve method looks at each cell of the grid and decides whether to change it, which quickly gets too slow as the grid grows.</li><li>The better method first finds the exact set of cells that must become Y, then tries the only six possible colour choices for that set and for the rest of the grid, which finishes instantly.</li><li>Pick the naïve style only for very tiny grids; otherwise use the six‑pair idea because it reduces a big search to a few simple sums.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> When the shape of Y is a small, fixed block of cells, think about splitting the board into the Y‑block and everything else and try all six ways to assign different colours.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Geometry-Mask Partition with Exhaustive Value Assignment</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class="flex items-center text-xs"><span class="rounded border border-blue-500 bg-blue-500/20">Y</span><span class="rounded border border-blue-500 bg-blue-500/20">Y</span>→<span class="rounded border border-slate-500">R</span><span class="rounded border border-blue-500">01</span>→<span class="rounded border border-red-500">x</span></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Value Pair Assignment <span class='opacity-60'>— Only 6 valid (val_Y, val_NonY) pairs exist using {0,1,2}, making local search trivial once the region is known.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>Without fixing Y&#x27;s shape, exploring all subsets of grid cells is exponential.</li><li>Fixed geometric region turns it into a simple cost minimization over 6 options.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(N^2) time, O(N^2) for mask storage (optional)</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def min_operations(grid):
+    n = len(grid)
+    m = n // 2
+    y_mask = [False] * n
+    y_set = set()
+    for i in range(n):
+        y_set.add((i, i))
+    for i in range(n):
+        y_set.add((i, n - 1 - i))
+    for j in range(n):
+        y_set.add((m, j))
+    idx = [(i, j) for j in range(n) if (i, j) in y_set]
+    best = n * n * 2
+    for vy in (0, 1, 2):
+        for vn in (0, 1, 2):
+            if vy == vn:
+                continue
+            cost = 0
+            for i in range(n):
+                for j in range(n):
+                    if (i, j) in y_set:
+                        cost += abs(grid[i][j] - vy)
+                    else:
+                        cost += abs(grid[i][j] - vn)
+            if cost &lt; best:
+                best = cost
+    return best</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Enumerate the six value swaps for the fixed Y-region and select the minimal cost.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Geometry-Mask Partition with Exhaustive Value Assignment</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>Identify the fixed geometric set of cells that must form the Y-shape. Treat this set and its complement as two separate layers. Since the grid values are limited to 0, 1, and 2, you can brute-force the best pair of target colors (one for the Y-layer, one for the rest) that are different.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>The Y-shape forms a rigid sub-grid defined by diagonals and a central column.</li><li>Cost calculation decouples into two independent sums: errors inside the Y-set vs errors outside.</li><li>Only six viable target-value pairs exist (ordered pairs of distinct values from {0,1,2}).</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Fixed geometric boundaries define a unique mask for the rows and columns involved.</li><li>Global color uniformity within each partition drives the need for trying all distinct value combos.</li><li>Small alphabet size (0-2) enables exhaustive iteration over target values instead of complex DP.</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Step 1: Compute the set of coordinates belonging to the Y-structure (main diagonal, anti-diagonal, and vertical midline).</li><li>Step 2: Iterate through the 6 possible assignments of a primary color to the Y-set and a secondary color to the rest, ensuring they differ.</li><li>Step 3: For each assignment, sum the absolute differences to convert the current grid into the target colors.</li><li>Step 4: Return the minimum conversion cost found.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (4 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Determine the Y-set coordinates.</li><li>Loop over all valid (val_y, val_o) pairs.</li><li>Calculate total operations for each pair.</li><li>Track the global minimum.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Locate the center index &#x27;mid&#x27; since the structure relies on symmetry around it. · Build a boolean array marking which cells are in the Y-region to avoid repeated calculations. · Start testing color pairs like (0,1), (0,2), (1,0), etc., summing mismatches efficiently.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def min_ops(grid):
+    n = len(grid)
+    mid = n // 2
+    pass</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n^2) time, O(n^2) space for the mask</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: What part of the Y‑shape lets you treat the whole problem as choosing a colour for the Y cells versus a colour for the rest of the grid?</div><div class='text-xs opacity-60 mt-1'>Hint: Remember that any difference between the groups can be settled by deciding which number goes on the Y lines and which number stays on the other cells.</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Because the Y letter occupies three straight lines (the two diagonals and a middle line); these lines together form a tiny, clear group of cells that can be treated as one piece.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: If you changed every cell one by one to match a target, how many possibilities would you have? Why does the efficient solution skip that?</div><div class='text-xs opacity-60 mt-1'>Hint: Since the Y‑set and the remaining cells are already known, the total cost splits into two easy sums—you don’t need to examine each cell again.</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>There could be millions of individual changes, so brute‑force would never finish. The efficient solution avoids that by noting that only six ordered pairs of different numbers exist (0‑1, 0‑2, 1‑0, 1‑2, 2‑0, 2‑1) and computes the cheapest among them.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">Check if every cell in the Y-set matches the chosen Y-color, and every non-Y cell matches the chosen non-Y-color, counting the changes.</p>
+      <a href="https://leetcode.com/problems/minimum-operations-to-write-the-letter-y-on-a-grid/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"pattern": "Value Pair Assignment", "why_obvious": "Only 6 valid (val_Y, val_NonY) pairs exist using {0,1,2}, making local search trivial once the region is known.", "why_stalls": ["Without fixing Y's shape, exploring all subsets of grid cells is exponential.", "Fixed geometric region turns it into a simple cost minimization over 6 options."], "complexity": "O(N^2) time, O(N^2) for mask storage (optional)", "starter_code": "def min_operations(grid):\n    n = len(grid)\n    m = n // 2\n    y_mask = [False] * n\n    y_set = set()\n    for i in range(n):\n        y_set.add((i, i))\n    for i in range(n):\n        y_set.add((i, n - 1 - i))\n    for j in range(n):\n        y_set.add((m, j))\n    idx = [(i, j) for j in range(n) if (i, j) in y_set]\n    best = n * n * 2\n    for vy in (0, 1, 2):\n        for vn in (0, 1, 2):\n            if vy == vn:\n                continue\n            cost = 0\n            for i in range(n):\n                for j in range(n):\n                    if (i, j) in y_set:\n                        cost += abs(grid[i][j] - vy)\n                    else:\n                        cost += abs(grid[i][j] - vn)\n            if cost < best:\n                best = cost\n    return best", "takeaway": "Enumerate the six value swaps for the fixed Y-region and select the minimal cost."}</script>
+        <script type="application/json" id="artifact-gold">{"pattern": "Geometry-Mask Partition with Exhaustive Value Assignment", "concept": "Identify the fixed geometric set of cells that must form the Y-shape. Treat this set and its complement as two separate layers. Since the grid values are limited to 0, 1, and 2, you can brute-force the best pair of target colors (one for the Y-layer, one for the rest) that are different.", "properties": ["The Y-shape forms a rigid sub-grid defined by diagonals and a central column.", "Cost calculation decouples into two independent sums: errors inside the Y-set vs errors outside.", "Only six viable target-value pairs exist (ordered pairs of distinct values from {0,1,2})."], "triggers": ["Fixed geometric boundaries define a unique mask for the rows and columns involved.", "Global color uniformity within each partition drives the need for trying all distinct value combos.", "Small alphabet size (0-2) enables exhaustive iteration over target values instead of complex DP."], "first_principles": ["Step 1: Compute the set of coordinates belonging to the Y-structure (main diagonal, anti-diagonal, and vertical midline).", "Step 2: Iterate through the 6 possible assignments of a primary color to the Y-set and a secondary color to the rest, ensuring they differ.", "Step 3: For each assignment, sum the absolute differences to convert the current grid into the target colors.", "Step 4: Return the minimum conversion cost found."], "how_to_start": ["Locate the center index 'mid' since the structure relies on symmetry around it.", "Build a boolean array marking which cells are in the Y-region to avoid repeated calculations.", "Start testing color pairs like (0,1), (0,2), (1,0), etc., summing mismatches efficiently."], "plan": ["Determine the Y-set coordinates.", "Loop over all valid (val_y, val_o) pairs.", "Calculate total operations for each pair.", "Track the global minimum."], "starter_code": {"language": "python", "code": "def min_ops(grid):\n    n = len(grid)\n    mid = n // 2\n    pass"}, "complexity": "O(n^2) time, O(n^2) space for the mask", "checklist": "Check if every cell in the Y-set matches the chosen Y-color, and every non-Y cell matches the chosen non-Y-color, counting the changes."}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["The naïve method looks at each cell of the grid and decides whether to change it, which quickly gets too slow as the grid grows.", "The better method first finds the exact set of cells that must become Y, then tries the only six possible colour choices for that set and for the rest of the grid, which finishes instantly.", "Pick the naïve style only for very tiny grids; otherwise use the six‑pair idea because it reduces a big search to a few simple sums."], "trigger": "When the shape of Y is a small, fixed block of cells, think about splitting the board into the Y‑block and everything else and try all six ways to assign different colours.", "quiz": [{"question": "What part of the Y‑shape lets you treat the whole problem as choosing a colour for the Y cells versus a colour for the rest of the grid?", "answer": "Because the Y letter occupies three straight lines (the two diagonals and a middle line); these lines together form a tiny, clear group of cells that can be treated as one piece.", "hint": "Remember that any difference between the groups can be settled by deciding which number goes on the Y lines and which number stays on the other cells."}, {"question": "If you changed every cell one by one to match a target, how many possibilities would you have? Why does the efficient solution skip that?", "answer": "There could be millions of individual changes, so brute‑force would never finish. The efficient solution avoids that by noting that only six ordered pairs of different numbers exist (0‑1, 0‑2, 1‑0, 1‑2, 2‑0, 2‑1) and computes the cheapest among them.", "hint": "Since the Y‑set and the remaining cells are already known, the total cost splits into two easy sums—you don’t need to examine each cell again."}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/minimum-operations-to-write-the-letter-y-on-a-grid/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
