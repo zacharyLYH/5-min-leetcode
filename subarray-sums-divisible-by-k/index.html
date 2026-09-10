@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Subarray Sums Divisible by K — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Subarray Sums Divisible by K</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-600 text-white">Medium</span>
+        <span class="text-xs text-slate-400 break-words">Array, Hash Table, Prefix Sum</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/subarray-sums-divisible-by-k/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>Given an integer array <code>nums</code> and an integer <code>k</code>, return <em>the number of non-empty <strong>subarrays</strong> that have a sum divisible by </em><code>k</code>.</p>
+
+<p>A <strong>subarray</strong> is a <strong>contiguous</strong> part of an array.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [4,5,0,-2,-3,1], k = 5
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> There are 7 subarrays with a sum divisible by k = 5:
+[4, 5, 0, -2, -3, 1], [5], [5, 0], [5, 0, -2, -3], [0], [0, -2, -3], [-2, -3]
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> nums = [5], k = 9
+<strong>Output:</strong> 0
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= nums.length &lt;= 3 * 10<sup>4</sup></code></li>
+	<li><code>-10<sup>4</sup> &lt;= nums[i] &lt;= 10<sup>4</sup></code></li>
+	<li><code>2 &lt;= k &lt;= 10<sup>4</sup></code></li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/subarray-sums-divisible-by-k/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive tries every possible start and end, recomputing the sum many times → slow when the list is long.</li><li>Gold walks through the list once, keeps a tally of how often each running‑total remainder has appeared → fast, linear time.</li><li>Switch to gold when the list has tens of thousands of elements because the naive method would need hundreds of millions of checks.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> If you need to count contiguous subarrays whose sum can be divided evenly by k, look for a way to remember how often each running total remainder has appeared.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Running total with remainder memory</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class='flex gap-1'><div class='bg-slate-500 text-white rounded p-1 text-xs text-center'><div>r4</div><div>0</div></div><div class='bg-blue-500 text-white rounded p-1 text-xs text-center'><div>r4</div><div>1</div></div><div class='bg-slate-500 text-white rounded p-1 text-xs text-center'><div>r2</div><div>0</div></div></div><div class='text-xs text-slate-300'>Blue = repeat → subarray divisible by k</div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Try every start, extend each end <span class='opacity-60'>— Subarrays are contiguous, so start anywhere and grow the sum one element at a time.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>n is up to 3 * 10^4, so about 450 million subarrays.</li><li>Each longer subarray recomputes sums already built from earlier starts.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n^2) time, O(1) space</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def subarraysDivByK(nums, k):
+    count = 0
+    n = len(nums)
+    for start in range(n):
+        total = 0
+        for end in range(start, n):
+            total += nums[end]
+            if total % k == 0:
+                count += 1
+    return count</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Ditch it when n is large and the same sums keep being recomputed.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Running total with remainder memory</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>Walk through nums once and remember the remainder of the running total after division by k. When the same remainder appears again, the numbers between those two places form a contiguous subarray whose sum is divisible by k, so you count matches instead of trying every subarray.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>A subarray is the difference between two running totals.</li><li>Two running totals with the same remainder differ by a multiple of k.</li><li>Only the remainder matters; Python&#x27;s % also handles negative numbers safely.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Count contiguous subarrays whose sum is divisible by k.</li><li>Many subarrays are possible; n reaches 3 * 10^4, so an O(n^2) search is unattractive.</li><li>Repeated remainders reveal valid contiguous blocks.</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine writing down the total after each number; a consecutive block is found by comparing two of those totals.</li><li>If two totals have the same remainder after division by k, their difference is divisible by k.</li><li>So store how often each remainder appeared, count repeats as you go, and remember remainder 0 once before reading anything.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (4 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Set up a counter with remainder 0 seen once.</li><li>Loop through nums and update the running total&#x27;s remainder.</li><li>Add how many times that remainder was seen before.</li><li>Increment that remainder&#x27;s count.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Write the running total and its remainder after each number. · Keep a count of remainders already seen, beginning with 0 seen once.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def count_subarrays(nums, k):
+    seen = [0] * k
+    seen[0] = 1
+    remainder = 0
+    answer = 0
+    for x in nums:
+        remainder = (remainder + x) % k
+        answer += seen[remainder]
+        seen[remainder] += 1
+    return answer</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n) time, O(k) space.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why does seeing the same remainder twice guarantee that the numbers between those two positions form a subarray whose sum is divisible by k? What would break if we only stored the full sums instead of the remainders?</div><div class='text-xs opacity-60 mt-1'>Hint: Think about what the remainder tells you about how far a sum is from the nearest multiple of k.</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Two sums with the same remainder differ by a multiple of k, so their difference (the subarray sum) is divisible by k. If we stored only the full sums we would lose this shortcut and would have to compare every pair again, making the algorithm slow.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: Why do we start with remainder 0 counted once before processing any number? What would we miss if we began with an empty table?</div><div class='text-xs opacity-60 mt-1'>Hint: Consider a subarray that begins at index 0; its sum is just the running total after the first few numbers.</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>That initial count captures subarrays that start at the first element and whose sum itself is divisible by k. Without it, those subarrays would never be counted.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">If you need to count contiguous subarrays whose sum is divisible by k, count repeated running-total remainders.</p>
+      <a href="https://leetcode.com/problems/subarray-sums-divisible-by-k/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"complexity": "O(n^2) time, O(1) space", "pattern": "Try every start, extend each end", "starter_code": "def subarraysDivByK(nums, k):\n    count = 0\n    n = len(nums)\n    for start in range(n):\n        total = 0\n        for end in range(start, n):\n            total += nums[end]\n            if total % k == 0:\n                count += 1\n    return count", "takeaway": "Ditch it when n is large and the same sums keep being recomputed.", "why_obvious": "Subarrays are contiguous, so start anywhere and grow the sum one element at a time.", "why_stalls": ["n is up to 3 * 10^4, so about 450 million subarrays.", "Each longer subarray recomputes sums already built from earlier starts."]}</script>
+        <script type="application/json" id="artifact-gold">{"checklist": "If you need to count contiguous subarrays whose sum is divisible by k, count repeated running-total remainders.", "complexity": "O(n) time, O(k) space.", "concept": "Walk through nums once and remember the remainder of the running total after division by k. When the same remainder appears again, the numbers between those two places form a contiguous subarray whose sum is divisible by k, so you count matches instead of trying every subarray.", "first_principles": ["Imagine writing down the total after each number; a consecutive block is found by comparing two of those totals.", "If two totals have the same remainder after division by k, their difference is divisible by k.", "So store how often each remainder appeared, count repeats as you go, and remember remainder 0 once before reading anything."], "how_to_start": ["Write the running total and its remainder after each number.", "Keep a count of remainders already seen, beginning with 0 seen once."], "pattern": "Running total with remainder memory", "plan": ["Set up a counter with remainder 0 seen once.", "Loop through nums and update the running total's remainder.", "Add how many times that remainder was seen before.", "Increment that remainder's count."], "properties": ["A subarray is the difference between two running totals.", "Two running totals with the same remainder differ by a multiple of k.", "Only the remainder matters; Python's % also handles negative numbers safely."], "starter_code": {"code": "def count_subarrays(nums, k):\n    seen = [0] * k\n    seen[0] = 1\n    remainder = 0\n    answer = 0\n    for x in nums:\n        remainder = (remainder + x) % k\n        answer += seen[remainder]\n        seen[remainder] += 1\n    return answer", "language": "python"}, "triggers": ["Count contiguous subarrays whose sum is divisible by k.", "Many subarrays are possible; n reaches 3 * 10^4, so an O(n^2) search is unattractive.", "Repeated remainders reveal valid contiguous blocks."]}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive tries every possible start and end, recomputing the sum many times → slow when the list is long.", "Gold walks through the list once, keeps a tally of how often each running‑total remainder has appeared → fast, linear time.", "Switch to gold when the list has tens of thousands of elements because the naive method would need hundreds of millions of checks."], "trigger": "If you need to count contiguous subarrays whose sum can be divided evenly by k, look for a way to remember how often each running total remainder has appeared.", "quiz": [{"question": "Why does seeing the same remainder twice guarantee that the numbers between those two positions form a subarray whose sum is divisible by k? What would break if we only stored the full sums instead of the remainders?", "answer": "Two sums with the same remainder differ by a multiple of k, so their difference (the subarray sum) is divisible by k. If we stored only the full sums we would lose this shortcut and would have to compare every pair again, making the algorithm slow.", "hint": "Think about what the remainder tells you about how far a sum is from the nearest multiple of k."}, {"question": "Why do we start with remainder 0 counted once before processing any number? What would we miss if we began with an empty table?", "answer": "That initial count captures subarrays that start at the first element and whose sum itself is divisible by k. Without it, those subarrays would never be counted.", "hint": "Consider a subarray that begins at index 0; its sum is just the running total after the first few numbers."}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/subarray-sums-divisible-by-k/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
