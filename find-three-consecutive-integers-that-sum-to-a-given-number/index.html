@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Find Three Consecutive Integers That Sum to a Given Number — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Find Three Consecutive Integers That Sum to a Given Number</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-600 text-white">Medium</span>
+        <span class="text-xs text-slate-400 break-words">Math, Simulation</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/find-three-consecutive-integers-that-sum-to-a-given-number/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>Given an integer <code>num</code>, return <em>three consecutive integers (as a sorted array)</em><em> that <strong>sum</strong> to </em><code>num</code>. If <code>num</code> cannot be expressed as the sum of three consecutive integers, return<em> an <strong>empty</strong> array.</em></p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> num = 33
+<strong>Output:</strong> [10,11,12]
+<strong>Explanation:</strong> 33 can be expressed as 10 + 11 + 12 = 33.
+10, 11, 12 are 3 consecutive integers, so we return [10, 11, 12].
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> num = 4
+<strong>Output:</strong> []
+<strong>Explanation:</strong> There is no way to express 4 as the sum of 3 consecutive integers.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>0 &lt;= num &lt;= 10<sup>15</sup></code></li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/find-three-consecutive-integers-that-sum-to-a-given-number/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive tries each possible first number and adds three values. Gold uses the middle number and one quick check.</li><li>Naive may need an enormous number of tries. Gold finishes immediately, even for a very large target.</li><li>Switch to Gold when the numbers are consecutive and their sum is fixed: center the group, then divide the target by 3.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> If three consecutive integers must add to a target, use the middle integer as the center and check whether the target divides evenly by 3.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Center-value trick</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class="flex items-center gap-1.5 text-xs"><span class="px-2 py-1 rounded border-slate-600 bg-slate-800">n</span><span class="px-1 text-slate-400">÷3</span><span class="px-2 py-1 rounded border-blue-500 bg-blue-500/10 text-blue-300">x</span><span class="px-1 text-slate-400">→</span><span class="px-2 py-1 rounded border-blue-500 bg-blue-500/10 text-blue-300">[x-1,x,x+1]</span></div><p class="mt-1 text-xs text-red-300">r≠0 → []</p></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Iterate starting from 0, checking if i + (i+1) + (i+2) equals num. <span class='opacity-60'>— Directly implements the definition of three consecutive integers.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>Exhaustive search becomes prohibitively slow for large num (up to 1e15).</li><li>Constant factor overhead for many redundant calculations.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(N) where N is approx num/3, infeasible for large inputs.</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def find_three_consecutive(num):
+    x = (num - 3) // 3
+    if x + (x + 1) + (x + 2) == num:
+        return [x, x + 1, x + 2]
+    return []</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Solve the linear equation algebraically for O(1) efficiency.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Center-value trick</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>Put one value in the middle, then take one step left and one step right. The three values always add to three times the middle, so divisibility by 3 tells you whether a valid middle exists.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (4) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>The numbers sit one step around a center.</li><li>Their sum is always 3 times the center.</li><li>The center must be an integer.</li><li>The returned order is already sorted.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Three consecutive integers with a target sum.</li><li>A symmetric middle value can represent the whole group.</li><li>The target is huge, so exact divisibility is faster than trying starts.</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine choosing the middle number first.</li><li>The other two must be one below and one above it.</li><li>Their sum becomes 3 times the middle, so split num by 3 and check for a remainder.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (4 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Check whether num is divisible by 3.</li><li>Divide num by 3 to find the middle.</li><li>Return middle - 1, middle, and middle + 1.</li><li>Otherwise return an empty array.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Name the unknown middle value. · Write the three values as middle - 1, middle, and middle + 1.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">class Solution:
+
+    def threeConsecutiveIntegers(self, num: int) -&gt; list[int]:
+        if num % 3 != 0:
+            return []
+        mid = num // 3
+        return [mid - 1, mid, mid + 1]</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(1) time, O(1) space</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why does checking divisibility by 3 tell us whether the three numbers exist?</div><div class='text-xs opacity-60 mt-1'>Hint: Write the numbers around one middle value. What happens to one step down and one step up when you add them?</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Let the middle number be m. The three numbers are m - 1, m, and m + 1. The -1 and +1 cancel, so the sum is always 3m. A valid target must divide evenly by 3.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: If the target is not divisible by 3, can choosing a different starting number make it work? Why or why not?</div><div class='text-xs opacity-60 mt-1'>Hint: The target divided by 3 should give the middle number. What would a remainder mean?</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>No. Every group of three consecutive integers has a sum that is a multiple of 3. If the target leaves a remainder after division by 3, no whole-number middle can produce it.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">If a fixed-size group is symmetric around one value, check whether its target sum is an exact multiple of the group size.</p>
+      <a href="https://leetcode.com/problems/find-three-consecutive-integers-that-sum-to-a-given-number/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"pattern": "Iterate starting from 0, checking if i + (i+1) + (i+2) equals num.", "why_obvious": "Directly implements the definition of three consecutive integers.", "why_stalls": ["Exhaustive search becomes prohibitively slow for large num (up to 1e15).", "Constant factor overhead for many redundant calculations."], "complexity": "O(N) where N is approx num/3, infeasible for large inputs.", "starter_code": "def find_three_consecutive(num):\n    x = (num - 3) // 3\n    if x + (x + 1) + (x + 2) == num:\n        return [x, x + 1, x + 2]\n    return []", "takeaway": "Solve the linear equation algebraically for O(1) efficiency."}</script>
+        <script type="application/json" id="artifact-gold">{"checklist": "If a fixed-size group is symmetric around one value, check whether its target sum is an exact multiple of the group size.", "complexity": "O(1) time, O(1) space", "concept": "Put one value in the middle, then take one step left and one step right. The three values always add to three times the middle, so divisibility by 3 tells you whether a valid middle exists.", "first_principles": ["Imagine choosing the middle number first.", "The other two must be one below and one above it.", "Their sum becomes 3 times the middle, so split num by 3 and check for a remainder."], "how_to_start": ["Name the unknown middle value.", "Write the three values as middle - 1, middle, and middle + 1."], "pattern": "Center-value trick", "plan": ["Check whether num is divisible by 3.", "Divide num by 3 to find the middle.", "Return middle - 1, middle, and middle + 1.", "Otherwise return an empty array."], "properties": ["The numbers sit one step around a center.", "Their sum is always 3 times the center.", "The center must be an integer.", "The returned order is already sorted."], "starter_code": {"code": "class Solution:\n\n    def threeConsecutiveIntegers(self, num: int) -> list[int]:\n        if num % 3 != 0:\n            return []\n        mid = num // 3\n        return [mid - 1, mid, mid + 1]", "language": "python"}, "triggers": ["Three consecutive integers with a target sum.", "A symmetric middle value can represent the whole group.", "The target is huge, so exact divisibility is faster than trying starts."]}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive tries each possible first number and adds three values. Gold uses the middle number and one quick check.", "Naive may need an enormous number of tries. Gold finishes immediately, even for a very large target.", "Switch to Gold when the numbers are consecutive and their sum is fixed: center the group, then divide the target by 3."], "quiz": [{"answer": "Let the middle number be m. The three numbers are m - 1, m, and m + 1. The -1 and +1 cancel, so the sum is always 3m. A valid target must divide evenly by 3.", "hint": "Write the numbers around one middle value. What happens to one step down and one step up when you add them?", "question": "Why does checking divisibility by 3 tell us whether the three numbers exist?"}, {"answer": "No. Every group of three consecutive integers has a sum that is a multiple of 3. If the target leaves a remainder after division by 3, no whole-number middle can produce it.", "hint": "The target divided by 3 should give the middle number. What would a remainder mean?", "question": "If the target is not divisible by 3, can choosing a different starting number make it work? Why or why not?"}], "trigger": "If three consecutive integers must add to a target, use the middle integer as the center and check whether the target divides evenly by 3."}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/find-three-consecutive-integers-that-sum-to-a-given-number/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
