@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minimum Difficulty of a Job Schedule — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Minimum Difficulty of a Job Schedule</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-red-600 text-white">Hard</span>
+        <span class="text-xs text-slate-400 break-words">Array, Dynamic Programming</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>You want to schedule a list of jobs in <code>d</code> days. Jobs are dependent (i.e To work on the <code>i<sup>th</sup></code> job, you have to finish all the jobs <code>j</code> where <code>0 &lt;= j &lt; i</code>).</p>
+
+<p>You have to finish <strong>at least</strong> one task every day. The difficulty of a job schedule is the sum of difficulties of each day of the <code>d</code> days. The difficulty of a day is the maximum difficulty of a job done on that day.</p>
+
+<p>You are given an integer array <code>jobDifficulty</code> and an integer <code>d</code>. The difficulty of the <code>i<sup>th</sup></code> job is <code>jobDifficulty[i]</code>.</p>
+
+<p>Return <em>the minimum difficulty of a job schedule</em>. If you cannot find a schedule for the jobs return <code>-1</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://assets.leetcode.com/uploads/2020/01/16/untitled.png" style="width: 365px; height: 370px;" />
+<pre>
+<strong>Input:</strong> jobDifficulty = [6,5,4,3,2,1], d = 2
+<strong>Output:</strong> 7
+<strong>Explanation:</strong> First day you can finish the first 5 jobs, total difficulty = 6.
+Second day you can finish the last job, total difficulty = 1.
+The difficulty of the schedule = 6 + 1 = 7 
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> jobDifficulty = [9,9,9], d = 4
+<strong>Output:</strong> -1
+<strong>Explanation:</strong> If you finish a job per day you will still have a free day. you cannot find a schedule for the given jobs.
+</pre>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<pre>
+<strong>Input:</strong> jobDifficulty = [1,1,1], d = 3
+<strong>Output:</strong> 3
+<strong>Explanation:</strong> The schedule is one job per day. total difficulty will be 3.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= jobDifficulty.length &lt;= 300</code></li>
+	<li><code>0 &lt;= jobDifficulty[i] &lt;= 1000</code></li>
+	<li><code>1 &lt;= d &lt;= 10</code></li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive tries every possible way to cut the list into days, doing the same work over and over.</li><li>Gold builds a table so each sub‑problem (first i jobs in k days) is solved once and then looked up instantly.</li><li>Switch to the table method when the list is longer than a few items; the naive way explodes while the table stays fast.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> If you need to split an ordered list into a fixed number of consecutive groups and the cost of each group is the largest value inside it, think of using a DP table that stores the best cost for a prefix and a given number of groups.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Partition DP</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class='flex items-center gap-1'><div class='rounded bg-blue-500 p-1'>3</div><div class='mr-1 rounded bg-slate-700 p-1'>2</div><div class='rounded bg-blue-500 p-1'>1</div><span class='text-slate-500'>=</span><div class='rounded bg-blue-500 p-1'>4</div></div><p class='text-[10px] text-slate-400'>Split into 2 groups; blue = day max.</p></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>contiguous partition DP <span class='opacity-60'>— Jobs stay ordered, so each day is a nonempty contiguous block; choose d-1 cut points.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>Cut patterns: C(n-1,d-1), exponential.</li><li>Same (i, day) repeats across different cut histories.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> Naive O(n*C(n-1,d-1)) time; memoized O(d*n*n) time, O(n*n) space here.</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">from functools import cache
+from itertools import accumulate
+
+def minDifficulty(jobDifficulty, d):
+    n = len(jobDifficulty)
+    mx = [list(accumulate(jobDifficulty[i:], max)) for i in range(n)]
+
+    @cache
+    def dp(i, day):
+        return mx[i][n - i - 1] if day == d - 1 else min((mx[i][j - i] + dp(j + 1, day + 1) for j in range(i, n - (d - day - 1))))
+    return -1 if n &lt; d else dp(0, 0)</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Use cut-point DP for ordered jobs; ditch raw recursion once n is more than tiny.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Partition DP</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>Treat the job list as one long sequence that must be divided into d consecutive groups. The cost of a group is simply the hardest job in it. The goal is to find the split points that make the sum of these group-hardnesses as small as possible.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Jobs are ordered linearly, meaning any schedule corresponds to cutting the list into d contiguous pieces.</li><li>The cost of a piece depends only on the maximum difficulty inside it, not the individual jobs.</li><li>We need exactly d pieces, requiring n &gt;= d jobs otherwise a schedule is impossible.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Split an array into k subarrays minimizing the sum of subarray maximums</li><li>Tasks with strict sequential ordering (no crossing allowed)</li><li>A fixed limit on the number of groups (d)</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Visualize the schedule as placing d-1 dividers between jobs to separate day 1 from day 2, etc.</li><li>Define dp[i][k] as the minimal difficulty to schedule the first i jobs in k days.</li><li>To compute dp[i][k], imagine the last day ends at job i-1; the last segment runs from some previous job j to i-1. Its cost is the max difficulty in that range plus the optimal cost up to j for k-1 days.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (6 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Create a table `dp` of size (n+1) x (d+1) filled with infinity.</li><li>Fill the first row/column: `dp[i][1]` is the max difficulty of the first i jobs.</li><li>Loop over day count k from 2 to d.</li><li>Loop over the end index i of the schedule.</li><li>Loop backward from i to find the best start j for the current day&#x27;s segment, maintaining a running max to avoid redundant calculations.</li><li>Take the minimum of existing `dp[i][k]` and `dp[j][k-1] + current_max`.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Initialize a DP table where rows represent job counts and columns represent day counts. · Populate the first column (1 day) since that requires taking all jobs up to that point. · Iterate through days (from 2 to d) and update the table by considering every possible end position and start position for the current day.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def min_difficulty(jobDifficulty, d):
+    n = len(jobDifficulty)
+    dp = [[float(&#x27;inf&#x27;)] * (d + 1) for _ in range(n + 1)]
+    cur = 0
+    for i in range(1, n + 1):
+        cur = max(cur, jobDifficulty[i - 1])
+        dp[i][1] = cur
+    for k in range(2, d + 1):
+        for i in range(k, n + 1):
+            mx = 0
+            for j in range(i - 1, k - 2, -1):
+                mx = max(mx, jobDifficulty[j])
+            dp[i][k] = min(dp[i][k], dp[j][k - 1] + mx)
+    res = dp[n][d]
+    return int(res) if res != float(&#x27;inf&#x27;) else -1</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n^2 * d)</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why can we compute the best schedule for the first i jobs in k days by only looking at the last day&#x27;s segment?</div><div class='text-xs opacity-60 mt-1'>Hint: Imagine removing the last day and ask what remains.</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Because any optimal schedule must end with some segment; the cost before that segment is already the optimal cost for the first j jobs in k-1 days, which we have stored.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: What would go wrong if we were allowed to reorder the jobs before assigning them to days?</div><div class='text-xs opacity-60 mt-1'>Hint: Think about needing to pick the hardest jobs regardless of where they sit in the list.</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>The DP that relies on contiguous blocks would no longer be correct, since the hardest job in a day could come from anywhere and we could not just take the maximum of a simple range.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">If n &lt; d return -1; otherwise fill DP table computing optimal partition sums across contiguous job groups.</p>
+      <a href="https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"complexity": "Naive O(n*C(n-1,d-1)) time; memoized O(d*n*n) time, O(n*n) space here.", "pattern": "contiguous partition DP", "starter_code": "from functools import cache\nfrom itertools import accumulate\n\ndef minDifficulty(jobDifficulty, d):\n    n = len(jobDifficulty)\n    mx = [list(accumulate(jobDifficulty[i:], max)) for i in range(n)]\n\n    @cache\n    def dp(i, day):\n        return mx[i][n - i - 1] if day == d - 1 else min((mx[i][j - i] + dp(j + 1, day + 1) for j in range(i, n - (d - day - 1))))\n    return -1 if n < d else dp(0, 0)", "takeaway": "Use cut-point DP for ordered jobs; ditch raw recursion once n is more than tiny.", "why_obvious": "Jobs stay ordered, so each day is a nonempty contiguous block; choose d-1 cut points.", "why_stalls": ["Cut patterns: C(n-1,d-1), exponential.", "Same (i, day) repeats across different cut histories."]}</script>
+        <script type="application/json" id="artifact-gold">{"pattern": "Partition DP", "concept": "Treat the job list as one long sequence that must be divided into d consecutive groups. The cost of a group is simply the hardest job in it. The goal is to find the split points that make the sum of these group-hardnesses as small as possible.", "properties": ["Jobs are ordered linearly, meaning any schedule corresponds to cutting the list into d contiguous pieces.", "The cost of a piece depends only on the maximum difficulty inside it, not the individual jobs.", "We need exactly d pieces, requiring n >= d jobs otherwise a schedule is impossible."], "triggers": ["Split an array into k subarrays minimizing the sum of subarray maximums", "Tasks with strict sequential ordering (no crossing allowed)", "A fixed limit on the number of groups (d)"], "first_principles": ["Visualize the schedule as placing d-1 dividers between jobs to separate day 1 from day 2, etc.", "Define dp[i][k] as the minimal difficulty to schedule the first i jobs in k days.", "To compute dp[i][k], imagine the last day ends at job i-1; the last segment runs from some previous job j to i-1. Its cost is the max difficulty in that range plus the optimal cost up to j for k-1 days."], "how_to_start": ["Initialize a DP table where rows represent job counts and columns represent day counts.", "Populate the first column (1 day) since that requires taking all jobs up to that point.", "Iterate through days (from 2 to d) and update the table by considering every possible end position and start position for the current day."], "plan": ["Create a table `dp` of size (n+1) x (d+1) filled with infinity.", "Fill the first row/column: `dp[i][1]` is the max difficulty of the first i jobs.", "Loop over day count k from 2 to d.", "Loop over the end index i of the schedule.", "Loop backward from i to find the best start j for the current day's segment, maintaining a running max to avoid redundant calculations.", "Take the minimum of existing `dp[i][k]` and `dp[j][k-1] + current_max`."], "starter_code": {"language": "python", "code": "def min_difficulty(jobDifficulty, d):\n    n = len(jobDifficulty)\n    dp = [[float('inf')] * (d + 1) for _ in range(n + 1)]\n    cur = 0\n    for i in range(1, n + 1):\n        cur = max(cur, jobDifficulty[i - 1])\n        dp[i][1] = cur\n    for k in range(2, d + 1):\n        for i in range(k, n + 1):\n            mx = 0\n            for j in range(i - 1, k - 2, -1):\n                mx = max(mx, jobDifficulty[j])\n            dp[i][k] = min(dp[i][k], dp[j][k - 1] + mx)\n    res = dp[n][d]\n    return int(res) if res != float('inf') else -1"}, "complexity": "O(n^2 * d)", "checklist": "If n < d return -1; otherwise fill DP table computing optimal partition sums across contiguous job groups."}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive tries every possible way to cut the list into days, doing the same work over and over.", "Gold builds a table so each sub‑problem (first i jobs in k days) is solved once and then looked up instantly.", "Switch to the table method when the list is longer than a few items; the naive way explodes while the table stays fast."], "trigger": "If you need to split an ordered list into a fixed number of consecutive groups and the cost of each group is the largest value inside it, think of using a DP table that stores the best cost for a prefix and a given number of groups.", "quiz": [{"question": "Why can we compute the best schedule for the first i jobs in k days by only looking at the last day's segment?", "answer": "Because any optimal schedule must end with some segment; the cost before that segment is already the optimal cost for the first j jobs in k-1 days, which we have stored.", "hint": "Imagine removing the last day and ask what remains."}, {"question": "What would go wrong if we were allowed to reorder the jobs before assigning them to days?", "answer": "The DP that relies on contiguous blocks would no longer be correct, since the hardest job in a day could come from anywhere and we could not just take the maximum of a simple range.", "hint": "Think about needing to pick the hardest jobs regardless of where they sit in the list."}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/minimum-difficulty-of-a-job-schedule/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
