@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Race Car — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Race Car</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-red-600 text-white">Hard</span>
+        <span class="text-xs text-slate-400 break-words">Dynamic Programming, Heuristic Search, A* Search</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/race-car/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>Your car starts at position <code>0</code> and speed <code>+1</code> on an infinite number line. Your car can go into negative positions. Your car drives automatically according to a sequence of instructions <code>&#39;A&#39;</code> (accelerate) and <code>&#39;R&#39;</code> (reverse):</p>
+
+<ul>
+	<li>When you get an instruction <code>&#39;A&#39;</code>, your car does the following:
+
+	<ul>
+		<li><code>position += speed</code></li>
+		<li><code>speed *= 2</code></li>
+	</ul>
+	</li>
+	<li>When you get an instruction <code>&#39;R&#39;</code>, your car does the following:
+	<ul>
+		<li>If your speed is positive then <code>speed = -1</code></li>
+		<li>otherwise <code>speed = 1</code></li>
+	</ul>
+	Your position stays the same.</li>
+</ul>
+
+<p>For example, after commands <code>&quot;AAR&quot;</code>, your car goes to positions <code>0 --&gt; 1 --&gt; 3 --&gt; 3</code>, and your speed goes to <code>1 --&gt; 2 --&gt; 4 --&gt; -1</code>.</p>
+
+<p>Given a target position <code>target</code>, return <em>the length of the shortest sequence of instructions to get there</em>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> target = 3
+<strong>Output:</strong> 2
+<strong>Explanation:</strong> 
+The shortest instruction sequence is &quot;AA&quot;.
+Your position goes from 0 --&gt; 1 --&gt; 3.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> target = 6
+<strong>Output:</strong> 5
+<strong>Explanation:</strong> 
+The shortest instruction sequence is &quot;AAARA&quot;.
+Your position goes from 0 --&gt; 1 --&gt; 3 --&gt; 7 --&gt; 7 --&gt; 6.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= target &lt;= 10<sup>4</sup></code></li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/race-car/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive tries every possible move sequence, which is too slow because the number of sequences grows exponentially. Gold only considers a few key positions (like 1, 3, 7, 15) and uses a table to remember the best way to reach each distance, so it avoids redoing work.</li><li>Naive explores both going forward and backward at every step, leading to many repeated states. Gold plans by either going just past the target or just short, then solving the smaller leftover distance, which is much faster.</li><li>Switch when you see that the problem can be split into smaller versions of itself and you can store answers for each size to avoid recomputation.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> If you notice that the problem can be broken into smaller versions of the same problem and you can store the results to avoid recomputation, then dynamic programming might be the way to go.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Dynamic programming by distance and powers of two</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class="flex space-x-1 text-xs"><div class="bg-slate-600 rounded p-1">T6</div><div class="bg-blue-500 rounded p-1">P7</div><div class="bg-blue-500 rounded p-1">R</div><div class="bg-slate-600 rounded p-1">L1</div><div class="bg-blue-500 rounded p-1">A</div><div class="bg-blue-500 rounded p-1">S5</div></div><div class="text-xs text-slate-400 mt-1">Overshoot, reverse, adjust</div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>BFS over state <span class='opacity-60'>— A and R are graph edges; shortest instruction sequence = shortest path.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>Input size: each A doubles speed, so many lengths/overshoots before target.</li><li>Repeated work: same (pos, speed) reached by many command strings.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(2^S) time and memory worst-case, S = shortest answer length; no bounds/pruning.</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">from collections import deque
+
+def racecar_naive(target):
+    q, seen = (deque([(0, 1, 0)]), {(0, 1)})
+    while q:
+        x, v, d = q.popleft()
+        if x == target:
+            return d
+        for nx, nv in ((x + v, v * 2), (x, -1 if v &gt; 0 else 1)):
+            if seen.add((nx, nv)) is None:
+                q.append((nx, nv, d + 1))</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Ditch BFS when shortest-path state space explodes; switch to DP split by overshoot/undershoot.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Dynamic programming by distance and powers of two</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>This is dynamic programming, but think: keep a table of best command counts for each distance. A long A-run always lands at 1, 3, 7, 15, ... so for any target, try going just short or just past one of those spots, then solve the smaller leftover distance.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (4) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>A repeated n times moves 2^n - 1: 1, 3, 7, 15, ...</li><li>After going near target and pressing R, the rest becomes the same problem on a smaller distance.</li><li>Those smaller distances are solved before the current one if you loop upward.</li><li>target &lt;= 10^4 is small enough for one best answer per distance.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Ask for shortest command sequence -&gt; minimize over a few smart plans.</li><li>A-runs land at 2^n - 1 -&gt; only check nearby power-of-two-minus-one spots.</li><li>target &lt;= 10^4 and leftovers shrink -&gt; store best cost for every distance.</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine pressing only A: you land at 1, then 3, then 7, then 15.</li><li>You notice straight bursts have predictable endpoints, so random instruction strings are wasteful to explore.</li><li>Then realize: after going near target and using R, the remaining job is the same race problem on a smaller distance.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (5 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Make dp[d] = fewest commands to finish exactly d away.</li><li>Loop d from 1 to target.</li><li>Find the A-run landing just at or past d.</li><li>Try the past-target plan and update dp[d].</li><li>Try short-target plans with a small backward A-run, then update dp[d].</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Write A-only positions: 1, 3, 7, 15, 31; place target between two of them. · For that target, compare: go past it and come back, or stop short, reverse, maybe move back a bit, reverse again.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def core(target, dp):
+    for d in range(1, target + 1):
+        n = d.bit_length()
+        after = (1 &lt;&lt; n) - 1
+        dp[d] = n if d == after else float(&#x27;inf&#x27;)
+        if d &lt; after:
+            dp[d] = min(dp[d], n + 1 + dp[after - d])
+        before = (1 &lt;&lt; n - 1) - 1
+        for back in range(n - 1):
+            rem = d - before + (1 &lt;&lt; back) - 1
+            dp[d] = min(dp[d], n + back + 1 + dp[rem])
+    return dp[target]</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(target log target) time, O(target) space.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why does the gold solution only consider positions that are one less than a power of two? What would happen if we tried every position?</div><div class='text-xs opacity-60 mt-1'>Hint: Think about what happens when you press A multiple times in a row. Where do you end up? Why are these positions special?</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Because pressing A repeatedly always lands at positions that are one less than a power of two (1, 3, 7, 15, ...). These are the only places where a straight run of A&#x27;s ends. By focusing on these, we cover all possible straight runs without checking every intermediate point. If we tried every position, we would have to consider too many possibilities, making the solution slow.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: In the gold solution, why is it safe to solve the problem for smaller distances first and then use those solutions for larger distances?</div><div class='text-xs opacity-60 mt-1'>Hint: Consider how the car&#x27;s movement after a reversal relates to a smaller version of the original problem. Why can we trust that the stored answer for a smaller distance is indeed the best?</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>It is safe because the problem has optimal substructure: the best way to reach a larger distance can be built from the best ways to reach smaller distances. By solving smaller distances first, we ensure that when we need them for larger distances, they are already computed and stored. This avoids redundant work and guarantees correctness.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">If shortest race commands come from repeated A-runs landing at 1, 3, 7, 15, store best cost for each smaller distance and minimize short/past target choices.</p>
+      <a href="https://leetcode.com/problems/race-car/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"complexity": "O(2^S) time and memory worst-case, S = shortest answer length; no bounds/pruning.", "pattern": "BFS over state", "starter_code": "from collections import deque\n\ndef racecar_naive(target):\n    q, seen = (deque([(0, 1, 0)]), {(0, 1)})\n    while q:\n        x, v, d = q.popleft()\n        if x == target:\n            return d\n        for nx, nv in ((x + v, v * 2), (x, -1 if v > 0 else 1)):\n            if seen.add((nx, nv)) is None:\n                q.append((nx, nv, d + 1))", "takeaway": "Ditch BFS when shortest-path state space explodes; switch to DP split by overshoot/undershoot.", "why_obvious": "A and R are graph edges; shortest instruction sequence = shortest path.", "why_stalls": ["Input size: each A doubles speed, so many lengths/overshoots before target.", "Repeated work: same (pos, speed) reached by many command strings."]}</script>
+        <script type="application/json" id="artifact-gold">{"checklist": "If shortest race commands come from repeated A-runs landing at 1, 3, 7, 15, store best cost for each smaller distance and minimize short/past target choices.", "complexity": "O(target log target) time, O(target) space.", "concept": "This is dynamic programming, but think: keep a table of best command counts for each distance. A long A-run always lands at 1, 3, 7, 15, ... so for any target, try going just short or just past one of those spots, then solve the smaller leftover distance.", "first_principles": ["Imagine pressing only A: you land at 1, then 3, then 7, then 15.", "You notice straight bursts have predictable endpoints, so random instruction strings are wasteful to explore.", "Then realize: after going near target and using R, the remaining job is the same race problem on a smaller distance."], "how_to_start": ["Write A-only positions: 1, 3, 7, 15, 31; place target between two of them.", "For that target, compare: go past it and come back, or stop short, reverse, maybe move back a bit, reverse again."], "pattern": "Dynamic programming by distance and powers of two", "plan": ["Make dp[d] = fewest commands to finish exactly d away.", "Loop d from 1 to target.", "Find the A-run landing just at or past d.", "Try the past-target plan and update dp[d].", "Try short-target plans with a small backward A-run, then update dp[d]."], "properties": ["A repeated n times moves 2^n - 1: 1, 3, 7, 15, ...", "After going near target and pressing R, the rest becomes the same problem on a smaller distance.", "Those smaller distances are solved before the current one if you loop upward.", "target <= 10^4 is small enough for one best answer per distance."], "starter_code": {"code": "def core(target, dp):\n    for d in range(1, target + 1):\n        n = d.bit_length()\n        after = (1 << n) - 1\n        dp[d] = n if d == after else float('inf')\n        if d < after:\n            dp[d] = min(dp[d], n + 1 + dp[after - d])\n        before = (1 << n - 1) - 1\n        for back in range(n - 1):\n            rem = d - before + (1 << back) - 1\n            dp[d] = min(dp[d], n + back + 1 + dp[rem])\n    return dp[target]", "language": "python"}, "triggers": ["Ask for shortest command sequence -> minimize over a few smart plans.", "A-runs land at 2^n - 1 -> only check nearby power-of-two-minus-one spots.", "target <= 10^4 and leftovers shrink -> store best cost for every distance."]}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive tries every possible move sequence, which is too slow because the number of sequences grows exponentially. Gold only considers a few key positions (like 1, 3, 7, 15) and uses a table to remember the best way to reach each distance, so it avoids redoing work.", "Naive explores both going forward and backward at every step, leading to many repeated states. Gold plans by either going just past the target or just short, then solving the smaller leftover distance, which is much faster.", "Switch when you see that the problem can be split into smaller versions of itself and you can store answers for each size to avoid recomputation."], "quiz": [{"answer": "Because pressing A repeatedly always lands at positions that are one less than a power of two (1, 3, 7, 15, ...). These are the only places where a straight run of A's ends. By focusing on these, we cover all possible straight runs without checking every intermediate point. If we tried every position, we would have to consider too many possibilities, making the solution slow.", "hint": "Think about what happens when you press A multiple times in a row. Where do you end up? Why are these positions special?", "question": "Why does the gold solution only consider positions that are one less than a power of two? What would happen if we tried every position?"}, {"answer": "It is safe because the problem has optimal substructure: the best way to reach a larger distance can be built from the best ways to reach smaller distances. By solving smaller distances first, we ensure that when we need them for larger distances, they are already computed and stored. This avoids redundant work and guarantees correctness.", "hint": "Consider how the car's movement after a reversal relates to a smaller version of the original problem. Why can we trust that the stored answer for a smaller distance is indeed the best?", "question": "In the gold solution, why is it safe to solve the problem for smaller distances first and then use those solutions for larger distances?"}], "trigger": "If you notice that the problem can be broken into smaller versions of the same problem and you can store the results to avoid recomputation, then dynamic programming might be the way to go."}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/race-car/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
