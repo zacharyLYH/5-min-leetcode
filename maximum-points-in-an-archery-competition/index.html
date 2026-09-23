@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maximum Points in an Archery Competition — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Maximum Points in an Archery Competition</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-600 text-white">Medium</span>
+        <span class="text-xs text-slate-400 break-words">Array, Backtracking, Bit Manipulation, Enumeration</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/maximum-points-in-an-archery-competition/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>Alice and Bob are opponents in an archery competition. The competition has set the following rules:</p>
+
+<ol>
+	<li>Alice first shoots <code>numArrows</code> arrows and then Bob shoots <code>numArrows</code> arrows.</li>
+	<li>The points are then calculated as follows:
+	<ol>
+		<li>The target has integer scoring sections ranging from <code>0</code> to <code>11</code> <strong>inclusive</strong>.</li>
+		<li>For <strong>each</strong> section of the target with score <code>k</code> (in between <code>0</code> to <code>11</code>), say Alice and Bob have shot <code>a<sub>k</sub></code> and <code>b<sub>k</sub></code> arrows on that section respectively. If <code>a<sub>k</sub> &gt;= b<sub>k</sub></code>, then Alice takes <code>k</code> points. If <code>a<sub>k</sub> &lt; b<sub>k</sub></code>, then Bob takes <code>k</code> points.</li>
+		<li>However, if <code>a<sub>k</sub> == b<sub>k</sub> == 0</code>, then <strong>nobody</strong> takes <code>k</code> points.</li>
+	</ol>
+	</li>
+</ol>
+
+<ul>
+	<li>
+	<p>For example, if Alice and Bob both shot <code>2</code> arrows on the section with score <code>11</code>, then Alice takes <code>11</code> points. On the other hand, if Alice shot <code>0</code> arrows on the section with score <code>11</code> and Bob shot <code>2</code> arrows on that same section, then Bob takes <code>11</code> points.</p>
+	</li>
+</ul>
+
+<p>You are given the integer <code>numArrows</code> and an integer array <code>aliceArrows</code> of size <code>12</code>, which represents the number of arrows Alice shot on each scoring section from <code>0</code> to <code>11</code>. Now, Bob wants to <strong>maximize</strong> the total number of points he can obtain.</p>
+
+<p>Return <em>the array </em><code>bobArrows</code><em> which represents the number of arrows Bob shot on <strong>each</strong> scoring section from </em><code>0</code><em> to </em><code>11</code>. The sum of the values in <code>bobArrows</code> should equal <code>numArrows</code>.</p>
+
+<p>If there are multiple ways for Bob to earn the maximum total points, return <strong>any</strong> one of them.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://assets.leetcode.com/uploads/2022/02/24/ex1.jpg" style="width: 600px; height: 120px;" />
+<pre>
+<strong>Input:</strong> numArrows = 9, aliceArrows = [1,1,0,1,0,0,2,1,0,1,2,0]
+<strong>Output:</strong> [0,0,0,0,1,1,0,0,1,2,3,1]
+<strong>Explanation:</strong> The table above shows how the competition is scored. 
+Bob earns a total point of 4 + 5 + 8 + 9 + 10 + 11 = 47.
+It can be shown that Bob cannot obtain a score higher than 47 points.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://assets.leetcode.com/uploads/2022/02/24/ex2new.jpg" style="width: 600px; height: 117px;" />
+<pre>
+<strong>Input:</strong> numArrows = 3, aliceArrows = [0,0,1,0,0,0,0,0,0,0,0,2]
+<strong>Output:</strong> [0,0,0,0,0,0,0,0,1,1,1,0]
+<strong>Explanation:</strong> The table above shows how the competition is scored.
+Bob earns a total point of 8 + 9 + 10 = 27.
+It can be shown that Bob cannot obtain a score higher than 27 points.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= numArrows &lt;= 10<sup>5</sup></code></li>
+	<li><code>aliceArrows.length == bobArrows.length == 12</code></li>
+	<li><code>0 &lt;= aliceArrows[i], bobArrows[i] &lt;= numArrows</code></li>
+	<li><code>sum(aliceArrows[i]) == numArrows</code></li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/maximum-points-in-an-archery-competition/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive tries every way to split the arrows among the 12 rings (huge number of splits).</li><li>Gold looks at each ring as a yes/no choice: win it or skip it, and checks all 2^12 yes/no patterns.</li><li>Switch to gold when the number of rings is small but the arrow count can be large.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> If you have a small fixed number of independent items each with a set cost and reward, and you need to pick a subset that stays under a total limit, consider enumerating all subsets with a bitmask.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Bitmask subset enumeration</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class="flex gap-1"><div class="text-center leading-8 h-8 w-8 rounded bg-blue-500 text-white text-xs">1</div><div class="text-center leading-8 h-8 w-8 rounded bg-slate-600 text-slate-100 text-xs">0</div><div class="text-center leading-8 h-8 w-8 rounded bg-blue-500 text-white text-xs">1</div></div><div class="text-center text-xs mt-1">Bitmask: iterate all 2^3 subsets</div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Brute-force every arrow split <span class='opacity-60'>— Only 12 sections, so every allocation feels easy to try.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>Input size: C(n+11,11) valid splits; impossible for n up to 100000.</li><li>Repeated work: many paths revisit the same section and remaining-arrow state.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(12 * (n + 1)^11), roughly O(n^11)</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">from itertools import product
+
+def brute_force(num_arrows, alice_arrows):
+    best = (-1, None)
+    for first_11 in product(range(num_arrows + 1), repeat=11):
+        bob_arrows = (*first_11, num_arrows - sum(first_11))
+        if bob_arrows[-1] &lt; 0:
+            continue
+        score = sum((i for i, arrows in enumerate(bob_arrows) if arrows &gt; alice_arrows[i]))
+        best = max(best, (score, bob_arrows))
+    return best[1]</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Ditch brute force when n is large; use the 2^12 win-or-skip mask.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Bitmask subset enumeration</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>When you have a small number of independent choices, each can be either taken or not. By representing each choice as a bit in an integer, you can iterate over all possible combinations, evaluate each, and pick the best one.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>The problem has exactly 12 scoring sections, so there are only 2^12 = 4096 possible win/lose patterns.</li><li>Each section i has a fixed cost (aliceArrows[i] + 1) and a fixed benefit (i).</li><li>The only constraint is that the total arrows used cannot exceed numArrows.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Number of sections is small (12), allowing brute-force over subsets</li><li>Each section has a fixed cost and benefit if won</li><li>Goal is to maximize total benefit under a total arrow limit</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine you are Bob deciding which rings to aim for.</li><li>For each ring you can either try to beat Alice or not.</li><li>If you try, you need to spend at least one more arrow than she did, and you earn that ring&#x27;s points.</li><li>You have a limited number of arrows, so you need to choose which rings are worth the cost.</li><li>You realize you can simply list every combination of rings, compute the arrows required, and see which combination gives the most points while fitting within your arrows.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (5 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Initialize best_score = -1 and best_mask = 0</li><li>For each mask from 0 to 4095:</li><li>    Sum arrows and points for each set bit</li><li>    If arrows &lt;= numArrows and points &gt; best_score, update best</li><li>Build bobArrows from best_mask, then fill any leftover arrows (e.g., put them in section 0)</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Write a loop that goes through all integers from 0 to (1&lt;&lt;12)-1. · For each integer, treat its bits as decisions to win each ring. · Compute total arrows and points, and keep track of the best combination.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">best_score = -1
+best_mask = 0
+for mask in range(1 &lt;&lt; 12):
+    arrows = 0
+    pts = 0
+    for i in range(12):
+        if mask &amp; 1 &lt;&lt; i:
+            arrows += aliceArrows[i] + 1
+            pts += i
+    if arrows &lt;= numArrows and pts &gt; best_score:
+        best_score = pts
+        best_mask = mask</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(2^12 * 12) ≈ 50k operations, constant time</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why does having only 12 rings make the bitmask approach feasible here?</div><div class='text-xs opacity-60 mt-1'>Hint: Think about how the number of possible yes/no choices grows as you add more rings.</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Because 2^12 equals 4096, a tiny number we can check quickly; if there were many more rings, the number of combinations would blow up and become impractical.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: What would happen if the arrows needed to win a ring changed depending on what you did with other rings?</div><div class='text-xs opacity-60 mt-1'>Hint: Imagine winning one ring made it harder or easier to win another—would the cost still be independent?</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>The simple pre‑computed cost per ring would no longer be correct, so you couldn’t just add up fixed costs for a subset; the subset‑sum trick would break.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">If you need to choose a subset of items to maximize value under a capacity and the number of items is tiny, enumerate all subsets with bitmask.</p>
+      <a href="https://leetcode.com/problems/maximum-points-in-an-archery-competition/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"complexity": "O(12 * (n + 1)^11), roughly O(n^11)", "pattern": "Brute-force every arrow split", "starter_code": "from itertools import product\n\ndef brute_force(num_arrows, alice_arrows):\n    best = (-1, None)\n    for first_11 in product(range(num_arrows + 1), repeat=11):\n        bob_arrows = (*first_11, num_arrows - sum(first_11))\n        if bob_arrows[-1] < 0:\n            continue\n        score = sum((i for i, arrows in enumerate(bob_arrows) if arrows > alice_arrows[i]))\n        best = max(best, (score, bob_arrows))\n    return best[1]", "takeaway": "Ditch brute force when n is large; use the 2^12 win-or-skip mask.", "why_obvious": "Only 12 sections, so every allocation feels easy to try.", "why_stalls": ["Input size: C(n+11,11) valid splits; impossible for n up to 100000.", "Repeated work: many paths revisit the same section and remaining-arrow state."]}</script>
+        <script type="application/json" id="artifact-gold">{"checklist": "If you need to choose a subset of items to maximize value under a capacity and the number of items is tiny, enumerate all subsets with bitmask.", "complexity": "O(2^12 * 12) ≈ 50k operations, constant time", "concept": "When you have a small number of independent choices, each can be either taken or not. By representing each choice as a bit in an integer, you can iterate over all possible combinations, evaluate each, and pick the best one.", "first_principles": ["Imagine you are Bob deciding which rings to aim for.", "For each ring you can either try to beat Alice or not.", "If you try, you need to spend at least one more arrow than she did, and you earn that ring's points.", "You have a limited number of arrows, so you need to choose which rings are worth the cost.", "You realize you can simply list every combination of rings, compute the arrows required, and see which combination gives the most points while fitting within your arrows."], "how_to_start": ["Write a loop that goes through all integers from 0 to (1<<12)-1.", "For each integer, treat its bits as decisions to win each ring.", "Compute total arrows and points, and keep track of the best combination."], "pattern": "Bitmask subset enumeration", "plan": ["Initialize best_score = -1 and best_mask = 0", "For each mask from 0 to 4095:", "    Sum arrows and points for each set bit", "    If arrows <= numArrows and points > best_score, update best", "Build bobArrows from best_mask, then fill any leftover arrows (e.g., put them in section 0)"], "properties": ["The problem has exactly 12 scoring sections, so there are only 2^12 = 4096 possible win/lose patterns.", "Each section i has a fixed cost (aliceArrows[i] + 1) and a fixed benefit (i).", "The only constraint is that the total arrows used cannot exceed numArrows."], "starter_code": {"code": "best_score = -1\nbest_mask = 0\nfor mask in range(1 << 12):\n    arrows = 0\n    pts = 0\n    for i in range(12):\n        if mask & 1 << i:\n            arrows += aliceArrows[i] + 1\n            pts += i\n    if arrows <= numArrows and pts > best_score:\n        best_score = pts\n        best_mask = mask", "language": "python"}, "triggers": ["Number of sections is small (12), allowing brute-force over subsets", "Each section has a fixed cost and benefit if won", "Goal is to maximize total benefit under a total arrow limit"]}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive tries every way to split the arrows among the 12 rings (huge number of splits).", "Gold looks at each ring as a yes/no choice: win it or skip it, and checks all 2^12 yes/no patterns.", "Switch to gold when the number of rings is small but the arrow count can be large."], "trigger": "If you have a small fixed number of independent items each with a set cost and reward, and you need to pick a subset that stays under a total limit, consider enumerating all subsets with a bitmask.", "quiz": [{"question": "Why does having only 12 rings make the bitmask approach feasible here?", "answer": "Because 2^12 equals 4096, a tiny number we can check quickly; if there were many more rings, the number of combinations would blow up and become impractical.", "hint": "Think about how the number of possible yes/no choices grows as you add more rings."}, {"question": "What would happen if the arrows needed to win a ring changed depending on what you did with other rings?", "answer": "The simple pre‑computed cost per ring would no longer be correct, so you couldn’t just add up fixed costs for a subset; the subset‑sum trick would break.", "hint": "Imagine winning one ring made it harder or easier to win another—would the cost still be independent?"}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/maximum-points-in-an-archery-competition/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
