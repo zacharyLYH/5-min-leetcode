@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Three Consecutive Odds — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Three Consecutive Odds</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-green-600 text-white">Easy</span>
+        <span class="text-xs text-slate-400 break-words">Array</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/three-consecutive-odds/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words">Given an integer array <code>arr</code>, return <code>true</code>&nbsp;if there are three consecutive odd numbers in the array. Otherwise, return&nbsp;<code>false</code>.
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [2,6,4,1]
+<strong>Output:</strong> false
+<b>Explanation:</b> There are no three consecutive odds.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<pre>
+<strong>Input:</strong> arr = [1,2,34,3,4,5,7,23,12]
+<strong>Output:</strong> true
+<b>Explanation:</b> [5,7,23] are three consecutive odds.
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= arr.length &lt;= 1000</code></li>
+	<li><code>1 &lt;= arr[i] &lt;= 1000</code></li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/three-consecutive-odds/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive way looks at every possible group of three numbers, which does lots of extra work.</li><li>Gold way walks through the list once, counting how many odds appear in a row and resetting the count when an even shows up.</li><li>Switch to the gold way when you only need to know if a run of three odds exists, because you don’t need to examine every triplet.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> When you need to know if three numbers in a row are odd, think about counting how many odds you have seen in a row as you walk through the list.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Running Counter</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class='flex gap-1'><div class='w-8 h-8 bg-slate-500 rounded grid place-items-center text-white text-xs'>1</div><div class='w-8 h-8 bg-slate-500 rounded grid place-items-center text-white text-xs'>3</div><div class='w-8 h-8 bg-blue-500 rounded grid place-items-center text-white text-xs'>5</div><div class='w-8 h-8 bg-red-500 rounded grid place-items-center text-white text-xs'>2</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Brute-force triplet scan <span class='opacity-60'>— Directly iterates through indices using nested loops to test every possible group of three elements.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>Examines O(N³) triplets instead of just adjacent windows, causing cubic time blowup.</li><li>Redundantly rechecks parity for overlapping segments, wasting cycles.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(N³) naive time, O(N) optimal time</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def three_consecutive_odds(arr):
+    n = len(arr)
+    for i in range(n - 2):
+        if arr[i] % 2 and arr[i + 1] % 2 and arr[i + 2] % 2:
+            return True
+    return False</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Maintain a running streak of odds; return true immediately upon reaching three consecutive matches.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Running Counter</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>Walk through the list and keep a counter of how many odd numbers you&#x27;ve seen in a row. If the counter ever reaches three, you know the answer is true. When you encounter an even number, you reset the counter to zero.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Only parity matters, not the actual values.</li><li>The requirement is three consecutive odds, so a running count works.</li><li>The array size is small, so linear scan is efficient.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Need to find three consecutive odd numbers</li><li>Array elements are integers, only odd/even matters</li><li>Length up to 1000, O(n) is acceptable</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine you&#x27;re scanning the array one element at a time.</li><li>When you see an odd number, you start a streak; if the next is also odd, the streak grows.</li><li>If it reaches three, you&#x27;ve found the answer; if an even appears, the streak breaks and you start over.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (5 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Initialize counter to 0</li><li>Iterate over each element</li><li>If element is odd, increase counter, else reset counter</li><li>If counter reaches 3, return true</li><li>After iteration, return false</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Initialize a variable streak to 0. · Loop through each number, updating streak based on whether the number is odd.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def three_consecutive_odds(arr):
+    streak = 0
+    for num in arr:
+        if num % 2 == 1:
+            streak += 1
+            if streak == 3:
+                return True
+        else:
+            streak = 0
+    return False</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n)</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why does resetting the count to zero when you see an even number give the correct answer?</div><div class='text-xs opacity-60 mt-1'>Hint: Imagine you kept the old count after an even; what would that count represent?</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Because an even number breaks any chance of having three odds in a row, so you must start counting again from the next element.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: What would go wrong if you only looked at every third element instead of each element while scanning?</div><div class='text-xs opacity-60 mt-1'>Hint: Consider a list where the odds begin at the second element.</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>You could miss a run of three odds that starts at an index not divisible by three, making you think there is no run when there actually is one.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">Scan the array while maintaining a streak counter, reset on even numbers, and return true if the streak reaches three.</p>
+      <a href="https://leetcode.com/problems/three-consecutive-odds/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"pattern": "Brute-force triplet scan", "why_obvious": "Directly iterates through indices using nested loops to test every possible group of three elements.", "why_stalls": ["Examines O(N³) triplets instead of just adjacent windows, causing cubic time blowup.", "Redundantly rechecks parity for overlapping segments, wasting cycles."], "complexity": "O(N³) naive time, O(N) optimal time", "starter_code": "def three_consecutive_odds(arr):\n    n = len(arr)\n    for i in range(n - 2):\n        if arr[i] % 2 and arr[i + 1] % 2 and arr[i + 2] % 2:\n            return True\n    return False", "takeaway": "Maintain a running streak of odds; return true immediately upon reaching three consecutive matches."}</script>
+        <script type="application/json" id="artifact-gold">{"checklist": "Scan the array while maintaining a streak counter, reset on even numbers, and return true if the streak reaches three.", "complexity": "O(n)", "concept": "Walk through the list and keep a counter of how many odd numbers you've seen in a row. If the counter ever reaches three, you know the answer is true. When you encounter an even number, you reset the counter to zero.", "first_principles": ["Imagine you're scanning the array one element at a time.", "When you see an odd number, you start a streak; if the next is also odd, the streak grows.", "If it reaches three, you've found the answer; if an even appears, the streak breaks and you start over."], "how_to_start": ["Initialize a variable streak to 0.", "Loop through each number, updating streak based on whether the number is odd."], "pattern": "Running Counter", "plan": ["Initialize counter to 0", "Iterate over each element", "If element is odd, increase counter, else reset counter", "If counter reaches 3, return true", "After iteration, return false"], "properties": ["Only parity matters, not the actual values.", "The requirement is three consecutive odds, so a running count works.", "The array size is small, so linear scan is efficient."], "starter_code": {"code": "def three_consecutive_odds(arr):\n    streak = 0\n    for num in arr:\n        if num % 2 == 1:\n            streak += 1\n            if streak == 3:\n                return True\n        else:\n            streak = 0\n    return False", "language": "python"}, "triggers": ["Need to find three consecutive odd numbers", "Array elements are integers, only odd/even matters", "Length up to 1000, O(n) is acceptable"]}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive way looks at every possible group of three numbers, which does lots of extra work.", "Gold way walks through the list once, counting how many odds appear in a row and resetting the count when an even shows up.", "Switch to the gold way when you only need to know if a run of three odds exists, because you don’t need to examine every triplet."], "trigger": "When you need to know if three numbers in a row are odd, think about counting how many odds you have seen in a row as you walk through the list.", "quiz": [{"question": "Why does resetting the count to zero when you see an even number give the correct answer?", "answer": "Because an even number breaks any chance of having three odds in a row, so you must start counting again from the next element.", "hint": "Imagine you kept the old count after an even; what would that count represent?"}, {"question": "What would go wrong if you only looked at every third element instead of each element while scanning?", "answer": "You could miss a run of three odds that starts at an index not divisible by three, making you think there is no run when there actually is one.", "hint": "Consider a list where the odds begin at the second element."}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/three-consecutive-odds/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
