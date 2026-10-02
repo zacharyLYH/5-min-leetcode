@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Minimum Height Trees — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Minimum Height Trees</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-600 text-white">Medium</span>
+        <span class="text-xs text-slate-400 break-words">Depth-First Search, Breadth-First Search, Graph Theory, Topological Sort</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/minimum-height-trees/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>A tree is an undirected graph in which any two vertices are connected by&nbsp;<i>exactly</i>&nbsp;one path. In other words, any connected graph without simple cycles is a tree.</p>
+
+<p>Given a tree of <code>n</code> nodes&nbsp;labelled from <code>0</code> to <code>n - 1</code>, and an array of&nbsp;<code>n - 1</code>&nbsp;<code>edges</code> where <code>edges[i] = [a<sub>i</sub>, b<sub>i</sub>]</code> indicates that there is an undirected edge between the two nodes&nbsp;<code>a<sub>i</sub></code> and&nbsp;<code>b<sub>i</sub></code> in the tree,&nbsp;you can choose any node of the tree as the root. When you select a node <code>x</code> as the root, the result tree has height <code>h</code>. Among all possible rooted trees, those with minimum height (i.e. <code>min(h)</code>)&nbsp; are called <strong>minimum height trees</strong> (MHTs).</p>
+
+<p>Return <em>a list of all <strong>MHTs&#39;</strong> root labels</em>.&nbsp;You can return the answer in <strong>any order</strong>.</p>
+
+<p>The <strong>height</strong> of a rooted tree is the number of edges on the longest downward path between the root and a leaf.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<img alt="" src="https://assets.leetcode.com/uploads/2020/09/01/e1.jpg" style="width: 800px; height: 213px;" />
+<pre>
+<strong>Input:</strong> n = 4, edges = [[1,0],[1,2],[1,3]]
+<strong>Output:</strong> [1]
+<strong>Explanation:</strong> As shown, the height of the tree is 1 when the root is the node with label 1 which is the only MHT.
+</pre>
+
+<p><strong class="example">Example 2:</strong></p>
+<img alt="" src="https://assets.leetcode.com/uploads/2020/09/01/e2.jpg" style="width: 800px; height: 321px;" />
+<pre>
+<strong>Input:</strong> n = 6, edges = [[3,0],[3,1],[3,2],[3,4],[5,4]]
+<strong>Output:</strong> [3,4]
+</pre>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 2 * 10<sup>4</sup></code></li>
+	<li><code>edges.length == n - 1</code></li>
+	<li><code>0 &lt;= a<sub>i</sub>, b<sub>i</sub> &lt; n</code></li>
+	<li><code>a<sub>i</sub> != b<sub>i</sub></code></li>
+	<li>All the pairs <code>(a<sub>i</sub>, b<sub>i</sub>)</code> are distinct.</li>
+	<li>The given input is <strong>guaranteed</strong> to be a tree and there will be <strong>no repeated</strong> edges.</li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/minimum-height-trees/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>Naive: try roots one by one, scan the whole tree each time; slow, same nodes touched again and again.</li><li>Gold: cut all outer one-connection nodes at once; each node handled once; middle is what stays.</li><li>Switch when you need the tree center or the smallest possible max distance, and the answer is one or two middle nodes.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> If you need nodes that make the farthest distance as small as possible in a tree, remove outer one-connection nodes layer by layer until one or two nodes remain.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Leaf peeling (topological sort)</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class="flex items-center gap-2"><div class="h-7 w-7 rounded bg-red-500/20 text-red-300 text-xs">0</div><div class="h-7 w-7 rounded bg-blue-500/20 text-blue-300 text-xs">1</div><div class="h-7 w-7 rounded bg-blue-500/20 text-blue-300 text-xs">2</div><div class="h-7 w-7 rounded bg-red-500/20 text-red-300 text-xs">3</div><p class="text-xs text-slate-400">peel red→blue</p></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Pick any root, run DFS/BFS to compute depths, then keep the root with smallest maximum depth. <span class='opacity-60'>— Intuitive: shorter paths from the centre minimise overall height.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>Repeated full traversals cost O(n^2) for large n.</li><li>Each vertex is removed many times instead of being processed once.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n) time, O(n) extra space</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def findMinHeightTrees(n, edges):
+    if n &lt;= 1:
+        return list(range(n))
+    adj = [[] for _ in range(n)]
+    deg = [0] * n
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)
+        deg[u] += 1
+        deg[v] += 1
+    leaves = [i for i in range(n) if deg[i] == 1]
+    cnt = n
+    while cnt &gt; 2:
+        new_leaves = []
+        for leaf in leaves:
+            for nb in adj[leaf]:
+                deg[nb] -= 1
+                if deg[nb] == 1:
+                    new_leaves.append(nb)
+            leaves.remove(leaf)
+        leaves = new_leaves
+        cnt -= len(new_leaves)
+    return leaves</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Leaf‑pruning (centroid removal) gives linear runtime, beating naïve repeated traversals.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Leaf peeling (topological sort)</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>In a tree, the center nodes give minimum height. By repeatedly removing all leaf nodes (degree 1) we shrink the tree toward its center. The last one or two nodes are the MHT roots.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>The graph is a tree with n-1 edges, connected, acyclic.</li><li>Leaves have degree 1; removing a leaf reduces neighbor degree and may create new leaves.</li><li>The process ends at the tree&#x27;s center, which lies on any longest path.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>You need to find roots that minimize the maximum distance to any leaf in a tree.</li><li>You can iteratively strip away nodes of degree 1.</li><li>The answer is either one node or two adjacent nodes.</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Think of the tree as a graph where the farthest nodes are leaves.</li><li>To minimize height, pick a root near the middle of the longest path.</li><li>Peel off outer leaves layer by layer; what remains is the middle.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (4 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Build adjacency list and degree array from edges.</li><li>Initialize a queue with all leaves (degree 1).</li><li>While more than 2 nodes remain, remove current leaves, decrease neighbor degrees, and add new leaves.</li><li>Return the remaining nodes.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Create an adjacency list and compute each node&#x27;s degree. · Collect all nodes with degree 1 as initial leaves.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def findMinHeightTrees(n, edges):
+    if n == 1:
+        return [0]
+    adj = [[] for _ in range(n)]
+    deg = [0] * n
+    for u, v in edges:
+        adj[u].append(v)
+        adj[v].append(u)
+        deg[u] += 1
+        deg[v] += 1
+    leaves = [i for i in range(n) if deg[i] == 1]
+    remaining = n
+    while remaining &gt; 2:
+        remaining -= len(leaves)
+        new_leaves = []
+        for leaf in leaves:
+            for neighbor in adj[leaf]:
+                deg[neighbor] -= 1
+                if deg[neighbor] == 1:
+                    new_leaves.append(neighbor)
+        leaves = new_leaves
+    return leaves</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n)</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why can we remove all outer one-connection nodes together? What breaks if the graph has a loop?</div><div class='text-xs opacity-60 mt-1'>Hint: Think of peeling an onion. A loop is a ring that never fully peels.</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>They are farthest from the middle. Removing them shrinks the tree from all sides at the same time. A loop keeps extra paths, so nodes may not become one-connection and the middle can be wrong or never reached.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: Why can the answer be two next-to-each-other nodes? What decides one vs two?</div><div class='text-xs opacity-60 mt-1'>Hint: Draw a line of 3 nodes vs 4 nodes. Where is the middle?</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>The middle of the longest line of nodes can be a node or the gap between two nodes. If the middle is a node, one answer. If it is between two nodes, both are equally good. A tree has one clear longest spine, so only these centers work.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">To find the center of a tree, repeatedly remove leaves until one or two nodes are left.</p>
+      <a href="https://leetcode.com/problems/minimum-height-trees/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"pattern": "Pick any root, run DFS/BFS to compute depths, then keep the root with smallest maximum depth.", "why_obvious": "Intuitive: shorter paths from the centre minimise overall height.", "why_stalls": ["Repeated full traversals cost O(n^2) for large n.", "Each vertex is removed many times instead of being processed once."], "complexity": "O(n) time, O(n) extra space", "starter_code": "def findMinHeightTrees(n, edges):\n    if n <= 1:\n        return list(range(n))\n    adj = [[] for _ in range(n)]\n    deg = [0] * n\n    for u, v in edges:\n        adj[u].append(v)\n        adj[v].append(u)\n        deg[u] += 1\n        deg[v] += 1\n    leaves = [i for i in range(n) if deg[i] == 1]\n    cnt = n\n    while cnt > 2:\n        new_leaves = []\n        for leaf in leaves:\n            for nb in adj[leaf]:\n                deg[nb] -= 1\n                if deg[nb] == 1:\n                    new_leaves.append(nb)\n            leaves.remove(leaf)\n        leaves = new_leaves\n        cnt -= len(new_leaves)\n    return leaves", "takeaway": "Leaf‑pruning (centroid removal) gives linear runtime, beating naïve repeated traversals."}</script>
+        <script type="application/json" id="artifact-gold">{"checklist": "To find the center of a tree, repeatedly remove leaves until one or two nodes are left.", "complexity": "O(n)", "concept": "In a tree, the center nodes give minimum height. By repeatedly removing all leaf nodes (degree 1) we shrink the tree toward its center. The last one or two nodes are the MHT roots.", "first_principles": ["Think of the tree as a graph where the farthest nodes are leaves.", "To minimize height, pick a root near the middle of the longest path.", "Peel off outer leaves layer by layer; what remains is the middle."], "how_to_start": ["Create an adjacency list and compute each node's degree.", "Collect all nodes with degree 1 as initial leaves."], "pattern": "Leaf peeling (topological sort)", "plan": ["Build adjacency list and degree array from edges.", "Initialize a queue with all leaves (degree 1).", "While more than 2 nodes remain, remove current leaves, decrease neighbor degrees, and add new leaves.", "Return the remaining nodes."], "properties": ["The graph is a tree with n-1 edges, connected, acyclic.", "Leaves have degree 1; removing a leaf reduces neighbor degree and may create new leaves.", "The process ends at the tree's center, which lies on any longest path."], "starter_code": {"code": "def findMinHeightTrees(n, edges):\n    if n == 1:\n        return [0]\n    adj = [[] for _ in range(n)]\n    deg = [0] * n\n    for u, v in edges:\n        adj[u].append(v)\n        adj[v].append(u)\n        deg[u] += 1\n        deg[v] += 1\n    leaves = [i for i in range(n) if deg[i] == 1]\n    remaining = n\n    while remaining > 2:\n        remaining -= len(leaves)\n        new_leaves = []\n        for leaf in leaves:\n            for neighbor in adj[leaf]:\n                deg[neighbor] -= 1\n                if deg[neighbor] == 1:\n                    new_leaves.append(neighbor)\n        leaves = new_leaves\n    return leaves", "language": "python"}, "triggers": ["You need to find roots that minimize the maximum distance to any leaf in a tree.", "You can iteratively strip away nodes of degree 1.", "The answer is either one node or two adjacent nodes."]}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["Naive: try roots one by one, scan the whole tree each time; slow, same nodes touched again and again.", "Gold: cut all outer one-connection nodes at once; each node handled once; middle is what stays.", "Switch when you need the tree center or the smallest possible max distance, and the answer is one or two middle nodes."], "trigger": "If you need nodes that make the farthest distance as small as possible in a tree, remove outer one-connection nodes layer by layer until one or two nodes remain.", "quiz": [{"question": "Why can we remove all outer one-connection nodes together? What breaks if the graph has a loop?", "answer": "They are farthest from the middle. Removing them shrinks the tree from all sides at the same time. A loop keeps extra paths, so nodes may not become one-connection and the middle can be wrong or never reached.", "hint": "Think of peeling an onion. A loop is a ring that never fully peels."}, {"question": "Why can the answer be two next-to-each-other nodes? What decides one vs two?", "answer": "The middle of the longest line of nodes can be a node or the gap between two nodes. If the middle is a node, one answer. If it is between two nodes, both are equally good. A tree has one clear longest spine, so only these centers work.", "hint": "Draw a line of 3 nodes vs 4 nodes. Where is the middle?"}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/minimum-height-trees/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
