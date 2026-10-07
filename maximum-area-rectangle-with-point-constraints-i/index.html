@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Maximum Area Rectangle With Point Constraints I — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Maximum Area Rectangle With Point Constraints I</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-600 text-white">Medium</span>
+        <span class="text-xs text-slate-400 break-words">Array, Math, Binary Indexed Tree, Segment Tree, Geometry, Sorting, Enumeration</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/maximum-area-rectangle-with-point-constraints-i/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>You are given an array <code>points</code> where <code>points[i] = [x<sub>i</sub>, y<sub>i</sub>]</code> represents the coordinates of a point on an infinite plane.</p>
+
+<p>Your task is to find the <strong>maximum </strong>area of a rectangle that:</p>
+
+<ul>
+	<li>Can be formed using <strong>four</strong> of these points as its corners.</li>
+	<li>Does <strong>not</strong> contain any other point inside or on its border.</li>
+	<li>Has its edges&nbsp;<strong>parallel</strong> to the axes.</li>
+</ul>
+
+<p>Return the <strong>maximum area</strong> that you can obtain or -1 if no such rectangle is possible.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">points = [[1,1],[1,3],[3,1],[3,3]]</span></p>
+
+<p><strong>Output: </strong>4</p>
+
+<p><strong>Explanation:</strong></p>
+
+<p><strong class="example"><img alt="Example 1 diagram" src="https://assets.leetcode.com/uploads/2026/02/23/3380_ex0.png" style="width: 250px; height: 250px;" /></strong></p>
+
+<p>We can make a rectangle with these 4 points as corners and there is no other point that lies inside or on the border<!-- notionvc: f270d0a3-a596-4ed6-9997-2c7416b2b4ee -->. Hence, the maximum possible area would be 4.</p>
+</div>
+
+<p><strong class="example">Example 2:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">points = [[1,1],[1,3],[3,1],[3,3],[2,2]]</span></p>
+
+<p><strong>Output:</strong><b> </b>-1</p>
+
+<p><strong>Explanation:</strong></p>
+
+<p><strong class="example"><img alt="Example 2 diagram" src="https://assets.leetcode.com/uploads/2026/02/23/3380_ex1.png" style="width: 230px; height: 230px;" /></strong></p>
+
+<p>There is only one rectangle possible is with points <code>[1,1], [1,3], [3,1]</code> and <code>[3,3]</code> but <code>[2,2]</code> will always lie inside it. Hence, returning -1.</p>
+</div>
+
+<p><strong class="example">Example 3:</strong></p>
+
+<div class="example-block">
+<p><strong>Input:</strong> <span class="example-io">points = [[1,1],[1,3],[3,1],[3,3],[1,2],[3,2]]</span></p>
+
+<p><strong>Output: </strong>2</p>
+
+<p><strong>Explanation:</strong></p>
+
+<p><strong class="example"><img alt="Example 3 diagram" src="https://assets.leetcode.com/uploads/2026/02/23/3380_ex2.png" style="width: 230px; height: 230px;" /></strong></p>
+
+<p>The maximum area rectangle is formed by the points <code>[1,3], [1,2], [3,2], [3,3]</code>, which has an area of 2. Additionally, the points <code>[1,1], [1,2], [3,1], [3,2]</code> also form a valid rectangle with the same area.</p>
+</div>
+
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= points.length &lt;= 10</code></li>
+	<li><code>points[i].length == 2</code></li>
+	<li><code>0 &lt;= x<sub>i</sub>, y<sub>i</sub> &lt;= 100</code></li>
+	<li>All the given points are <strong>unique</strong>.</li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/maximum-area-rectangle-with-point-constraints-i/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>The naive way tries every pair of dots like a blind search, which works but gets very slow when there are many dots.</li><li>The gold way first groups dots by their x and y positions, then picks two different x-lines and two different y-lines to form the frame. This cuts the work dramatically.</li><li>Switch to the gold method when the number of points grows past a dozen or when you need a faster solution.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> If you notice that checking every single pair of points creates too much work, look for a way to organize the points by their columns and rows.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Brute Force Enumeration</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class='flex items-center space-x-1 text-xs'><div class='bg-slate-700 rounded px-2 py-1'>Pt</div><span>→</span><div class='bg-slate-700 rounded px-2 py-1'>En</div><span>→</span><div class='bg-blue-600 rounded px-2 py-1'>Ck</div><span>→</span><div class='bg-red-600 rounded px-2 py-1'>In</div><span>→</span><div class='bg-blue-600 rounded px-2 py-1'>Ar</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>enumerate opposite corners <span class='opacity-60'>— axis‑aligned rectangle is fixed by two distinct x and two distinct y; any pair of points with different x and y can serve as opposite corners.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>must verify no other point lies inside or on the border → O(n) work per pair</li><li>number of point pairs is O(n²)</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(n³)</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def maxArea(points):
+    s = {tuple(p) for p in points}
+    ans = 0
+    n = len(points)
+    for i in range(n):
+        x1, y1 = points[i]
+        for j in range(i + 1, n):
+            x2, y2 = points[j]
+            if x1 == x2 or y1 == y2:
+                continue
+            if (x1, y2) in s and (x2, y1) in s:
+                ok = True
+                for x, y in points:
+                    if min(x1, x2) &lt;= x &lt;= max(x1, x2) and min(y1, y2) &lt;= y &lt;= max(y1, y2):
+                        if (x, y) not in {(x1, y1), (x1, y2), (x2, y1), (x2, y2)}:
+                            ok = False
+                            break
+                if ok:
+                    ans = max(ans, abs(x1 - x2) * abs(y1 - y2))
+    return ans if ans else -1</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Drop this brute force when n grows beyond a few hundred or when you need sub‑quadratic checks.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Brute Force Enumeration</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>Iterate through all possible pairs of unique x-coordinates to represent left/right edges, and all pairs of unique y-coordinates to represent bottom/top edges. For each candidate pair, treat the four intersections as potential rectangle corners. Validate that all four corners exist in the input set and verify that no other point lies strictly inside the resulting bounding box.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (3) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Small input size (≤10 points) permits exhaustive checking of every geometric configuration rather than relying on advanced data structures.</li><li>An axis-aligned rectangle is completely defined by selecting two distinct x-values and two distinct y-values.</li><li>The &#x27;empty&#x27; condition means no additional point can share an x-range and y-range simultaneously inside the box.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>The requirement for axis-parallel edges forces rectangles to be defined purely by their extreme x and y coordinates.</li><li>Because the point set must not contain any other point on the border or inside, a simple existence check combined with an interior sweep is sufficient validation.</li><li>The low constraints on the total number of points make an O(N^4) search approach computationally trivial.</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine that for a rectangle to exist, you must first decide its left and right limits (two different x-values) and its bottom and top limits (two different y-values).</li><li>Once you fix these four limits, the four corners are mathematically fixed, so you just need to check if all four corners actually appear in your list of points.</li><li>After confirming the corners are present, you must scan the remaining points to ensure none sneak inside the open interval between those limits.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (6 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Generate all combinations of 2 items from the x-coordinates list.</li><li>For each x-pair, generate all combinations of 2 items from the y-coordinates list.</li><li>Calculate the width and height for the current rectangle.</li><li>Check if all four corner coordinates exist in the original set.</li><li>Verify no other point lies within the strict interior bounds.</li><li>Update the global maximum area if this rectangle is valid.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> Convert the point list into a set of tuples for O(1) membership tests. · Collect and sort unique x and y coordinates separately.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-Python">import itertools
+
+def largestRectangle(points):
+    s = set(map(tuple, points))
+    xs = sorted({p[0] for p in s})
+    ys = sorted({p[1] for p in s})
+    best = -1
+    for x_left, x_right in itertools.combinations(xs, 2):
+        for y_bottom, y_top in itertools.combinations(ys, 2):
+            corners = ((x_left, y_bottom), (x_left, y_top), (x_right, y_bottom), (x_right, y_top))
+            if all((c in s for c in corners)):
+                okay = True
+                for p in s:
+                    px, py = p
+                    if x_left &lt; px &lt; x_right and y_bottom &lt; py &lt; y_top:
+                        okay = False
+                        break
+                if okay:
+                    best = max(best, (x_right - x_left) * (y_top - y_bottom))
+    return best</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(U_x^2 * U_y^2) where U_x and U_y are the counts of unique x and y coordinates. Given N ≤ 10, this simplifies to a very small constant-time operation.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why does the gold method suggest gathering all unique x and y values before forming rectangles?</div><div class='text-xs opacity-60 mt-1'>Hint: Think of building a fence. You only need to pick where the posts go (unique x and y spots), not every single tree (every point).</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>A rectangle is completely defined by its left wall, right wall, bottom wall, and top wall. These are just lines (x and y positions), not individual dots. Grouping removes repeated lines and focuses only on the boundary lines.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: After finding four corners, what final check ensures the rectangle is valid?</div><div class='text-xs opacity-60 mt-1'>Hint: Imagine closing a net around two dots. If there is any loose dot floating inside that net, the net isn&#x27;t a true rectangle anymore.</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>You must verify that no other dots are hidden inside the box formed by the corners.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">If you need to maximize area under axis-parallel constraints, enumerate every pair of x-bounds and y-bounds, then verify corner existence and interior emptiness. The small input size guarantees this brute-force search is safe and fast.</p>
+      <a href="https://leetcode.com/problems/maximum-area-rectangle-with-point-constraints-i/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"pattern": "enumerate opposite corners", "why_obvious": "axis‑aligned rectangle is fixed by two distinct x and two distinct y; any pair of points with different x and y can serve as opposite corners.", "why_stalls": ["must verify no other point lies inside or on the border → O(n) work per pair", "number of point pairs is O(n²)"], "complexity": "O(n³)", "starter_code": "def maxArea(points):\n    s = {tuple(p) for p in points}\n    ans = 0\n    n = len(points)\n    for i in range(n):\n        x1, y1 = points[i]\n        for j in range(i + 1, n):\n            x2, y2 = points[j]\n            if x1 == x2 or y1 == y2:\n                continue\n            if (x1, y2) in s and (x2, y1) in s:\n                ok = True\n                for x, y in points:\n                    if min(x1, x2) <= x <= max(x1, x2) and min(y1, y2) <= y <= max(y1, y2):\n                        if (x, y) not in {(x1, y1), (x1, y2), (x2, y1), (x2, y2)}:\n                            ok = False\n                            break\n                if ok:\n                    ans = max(ans, abs(x1 - x2) * abs(y1 - y2))\n    return ans if ans else -1", "takeaway": "Drop this brute force when n grows beyond a few hundred or when you need sub‑quadratic checks."}</script>
+        <script type="application/json" id="artifact-gold">{"pattern": "Brute Force Enumeration", "concept": "Iterate through all possible pairs of unique x-coordinates to represent left/right edges, and all pairs of unique y-coordinates to represent bottom/top edges. For each candidate pair, treat the four intersections as potential rectangle corners. Validate that all four corners exist in the input set and verify that no other point lies strictly inside the resulting bounding box.", "properties": ["Small input size (≤10 points) permits exhaustive checking of every geometric configuration rather than relying on advanced data structures.", "An axis-aligned rectangle is completely defined by selecting two distinct x-values and two distinct y-values.", "The 'empty' condition means no additional point can share an x-range and y-range simultaneously inside the box."], "triggers": ["The requirement for axis-parallel edges forces rectangles to be defined purely by their extreme x and y coordinates.", "Because the point set must not contain any other point on the border or inside, a simple existence check combined with an interior sweep is sufficient validation.", "The low constraints on the total number of points make an O(N^4) search approach computationally trivial."], "first_principles": ["Imagine that for a rectangle to exist, you must first decide its left and right limits (two different x-values) and its bottom and top limits (two different y-values).", "Once you fix these four limits, the four corners are mathematically fixed, so you just need to check if all four corners actually appear in your list of points.", "After confirming the corners are present, you must scan the remaining points to ensure none sneak inside the open interval between those limits."], "how_to_start": ["Convert the point list into a set of tuples for O(1) membership tests.", "Collect and sort unique x and y coordinates separately."], "plan": ["Generate all combinations of 2 items from the x-coordinates list.", "For each x-pair, generate all combinations of 2 items from the y-coordinates list.", "Calculate the width and height for the current rectangle.", "Check if all four corner coordinates exist in the original set.", "Verify no other point lies within the strict interior bounds.", "Update the global maximum area if this rectangle is valid."], "starter_code": {"language": "Python", "code": "import itertools\n\ndef largestRectangle(points):\n    s = set(map(tuple, points))\n    xs = sorted({p[0] for p in s})\n    ys = sorted({p[1] for p in s})\n    best = -1\n    for x_left, x_right in itertools.combinations(xs, 2):\n        for y_bottom, y_top in itertools.combinations(ys, 2):\n            corners = ((x_left, y_bottom), (x_left, y_top), (x_right, y_bottom), (x_right, y_top))\n            if all((c in s for c in corners)):\n                okay = True\n                for p in s:\n                    px, py = p\n                    if x_left < px < x_right and y_bottom < py < y_top:\n                        okay = False\n                        break\n                if okay:\n                    best = max(best, (x_right - x_left) * (y_top - y_bottom))\n    return best"}, "complexity": "O(U_x^2 * U_y^2) where U_x and U_y are the counts of unique x and y coordinates. Given N ≤ 10, this simplifies to a very small constant-time operation.", "checklist": "If you need to maximize area under axis-parallel constraints, enumerate every pair of x-bounds and y-bounds, then verify corner existence and interior emptiness. The small input size guarantees this brute-force search is safe and fast."}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["The naive way tries every pair of dots like a blind search, which works but gets very slow when there are many dots.", "The gold way first groups dots by their x and y positions, then picks two different x-lines and two different y-lines to form the frame. This cuts the work dramatically.", "Switch to the gold method when the number of points grows past a dozen or when you need a faster solution."], "trigger": "If you notice that checking every single pair of points creates too much work, look for a way to organize the points by their columns and rows.", "quiz": [{"question": "Why does the gold method suggest gathering all unique x and y values before forming rectangles?", "answer": "A rectangle is completely defined by its left wall, right wall, bottom wall, and top wall. These are just lines (x and y positions), not individual dots. Grouping removes repeated lines and focuses only on the boundary lines.", "hint": "Think of building a fence. You only need to pick where the posts go (unique x and y spots), not every single tree (every point)."}, {"question": "After finding four corners, what final check ensures the rectangle is valid?", "answer": "You must verify that no other dots are hidden inside the box formed by the corners.", "hint": "Imagine closing a net around two dots. If there is any loose dot floating inside that net, the net isn't a true rectangle anymore."}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/maximum-area-rectangle-with-point-constraints-i/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
