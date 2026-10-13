@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Implement Rand10() Using Rand7() — 5-min LeetCode</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config={darkMode:'class'}</script>
+</head>
+<body class="bg-white dark:bg-slate-950 text-slate-800 dark:text-slate-200 antialiased overflow-x-hidden">
+<header class="bg-slate-900 dark:bg-black text-white sticky top-0 z-10">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="text-[10px] tracking-widest opacity-60 uppercase">5-min LeetCode</div>
+      <h1 class="text-xl sm:text-2xl font-bold leading-tight break-words [overflow-wrap:anywhere]">Implement Rand10() Using Rand7()</h1>
+      <div class="mt-2 flex gap-2 items-center flex-wrap">
+        <span class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold bg-amber-600 text-white">Medium</span>
+        <span class="text-xs text-slate-400 break-words">Math, Rejection Sampling, Randomized, Probability and Statistics</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <a href="https://leetcode.com/problems/implement-rand10-using-rand7/" target="_blank" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-600 hover:bg-blue-500 px-3 py-2 text-xs font-medium text-white">LeetCode →</a>
+      <button onclick="toggleDark()" aria-label="Toggle dark" class="inline-flex items-center justify-center rounded-md border border-slate-700 bg-slate-800 px-2.5 py-2 text-xs">🌙</button>
+    </div>
+  </div>
+</header>
+<main class="max-w-2xl mx-auto px-4 sm:px-6 py-6 space-y-4">
+  <!-- Progress: real scroll -->
+  <div class="h-1 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden"><div id="progress" class="h-full bg-blue-600 w-0 transition-all duration-150"></div></div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Problem</h2>
+      <details>
+        <summary class="text-xs font-medium cursor-pointer text-blue-600 dark:text-blue-400 list-none">Show full problem ↕</summary>
+        <div class="text-[14px] leading-6 mt-2 break-words [overflow-wrap:anywhere] prose prose-sm dark:prose-invert max-w-none [&_img]:max-w-full [&_img]:h-auto [&_pre]:whitespace-pre-wrap [&_pre]:break-words"><p>Given the <strong>API</strong> <code>rand7()</code> that generates a uniform random integer in the range <code>[1, 7]</code>, write a function <code>rand10()</code> that generates a uniform random integer in the range <code>[1, 10]</code>. You can only call the API <code>rand7()</code>, and you shouldn&#39;t call any other API. Please <strong>do not</strong> use a language&#39;s built-in random API.</p>
+
+<p>Each test case will have one <strong>internal</strong> argument <code>n</code>, the number of times that your implemented function <code>rand10()</code> will be called while testing. Note that this is <strong>not an argument</strong> passed to <code>rand10()</code>.</p>
+
+<p>&nbsp;</p>
+<p><strong class="example">Example 1:</strong></p>
+<pre><strong>Input:</strong> n = 1
+<strong>Output:</strong> [2]
+</pre><p><strong class="example">Example 2:</strong></p>
+<pre><strong>Input:</strong> n = 2
+<strong>Output:</strong> [2,8]
+</pre><p><strong class="example">Example 3:</strong></p>
+<pre><strong>Input:</strong> n = 3
+<strong>Output:</strong> [3,8,10]
+</pre>
+<p>&nbsp;</p>
+<p><strong>Constraints:</strong></p>
+
+<ul>
+	<li><code>1 &lt;= n &lt;= 10<sup>5</sup></code></li>
+</ul>
+
+<p>&nbsp;</p>
+<p><strong>Follow up:</strong></p>
+
+<ul>
+	<li>What is the <a href="https://en.wikipedia.org/wiki/Expected_value" target="_blank">expected value</a> for the number of calls to <code>rand7()</code> function?</li>
+	<li>Could you minimize the number of calls to <code>rand7()</code>?</li>
+</ul>
+</div>
+      </details>
+      <a href="https://leetcode.com/problems/implement-rand10-using-rand7/" target="_blank" class="inline-flex mt-3 text-xs font-medium text-blue-600 dark:text-blue-400">View on LeetCode →</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-amber-50 dark:bg-amber-950/30 dark:border-amber-900 shadow-sm overflow-hidden">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-amber-900 dark:text-amber-200 text-sm">TL;DR — 30s scan</h2>
+      <div class="text-sm text-amber-900 dark:text-amber-100 mt-2 break-words"><ul class='list-disc pl-5 space-y-1'><li>The naive way wastes effort by checking hundreds of pairs and throwing most away before finding a good one.</li><li>The strong way plans ahead: it creates a safe pool of exactly enough pairs to form full groups of ten, accepts those immediately, and discards the rest.</li></ul><div class='mt-3 text-xs'><span class='font-semibold'>Spot next time:</span> Look for the moment where a tool gives fewer results than you need, and decide to toss the extra ones instead of starting over.</div></div>
+    </div>
+  </div>
+
+  <!-- Visual: LLM-generated Tailwind fragment -->
+  <div class="rounded-xl border bg-slate-900 text-slate-100 shadow-sm overflow-hidden">
+    <div class="p-4">
+      <div class="text-[10px] tracking-widest uppercase opacity-60">Visual — Rejection Sampling</div>
+      <div class="mt-3 flex items-center justify-center overflow-hidden min-h-[3rem]"><div class="flex items-center gap-1 p-1"><div class="w-5 h-5 rounded bg-blue-600 flex items-center justify-center text-white text-xs">7</div><div class="w-5 h-5 rounded bg-blue-600 flex items-center justify-center text-white text-xs">3</div><div class="w-5 h-5 rounded bg-slate-500 flex items-center justify-center text-white text-xs">=22</div><div class="w-5 h-5 rounded bg-blue-600 flex items-center justify-center text-white text-xs">OK</div><div class="w-5 h-5 rounded bg-blue-600 flex items-center justify-center text-white text-xs">2</div></div><p class="text-xs text-slate-400">Rejection Sampling: accept 1‑40 → 1‑10</p></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm overflow-hidden">
+    <div class="flex gap-1 p-1 bg-slate-100 dark:bg-slate-800">
+      <button id="tab-naive" onclick="showTab('naive')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold bg-white dark:bg-slate-700 shadow-sm">💡 Your first idea</button>
+      <button id="tab-gold" onclick="showTab('gold')" class="flex-1 rounded-md px-3 py-2 text-xs font-semibold opacity-60">⭐ Better pattern</button>
+    </div>
+    <div id="panel-naive" class="tab-panel p-4 sm:p-5">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Rejection sampling <span class='opacity-60'>— Two rand7 calls give 49 equiprobable outcomes.</span></div><ul class='list-disc pl-5 mt-2 text-xs opacity-80'><li>9/49 outcomes rejected → possible retries.</li><li>Each rand10 may loop many times → hurts large n.</li></ul><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> Expected O(1) per call, worst‑case unbounded; naïve count looks O(n^2).</div><div class="relative mt-3"><button id="naive-code-btn" onclick="copyCode('naive-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="naive-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def rand10():
+    while True:
+        a = rand7()
+        b = rand7()
+        num = (a - 1) * 7 + b
+        if num &lt;= 40:
+            return 1 + (num - 1) % 10</code></pre></div><details class='mt-2'><summary class='text-xs font-medium cursor-pointer opacity-70'>Takeaway</summary><div class='text-xs mt-1 italic'>Drop the plain loop and recycle rejected entropy to cut calls.</div></details></div></div>
+    </div>
+    <div id="panel-gold" class="tab-panel p-4 sm:p-5 hidden">
+      <div class="text-sm leading-6 break-words [overflow-wrap:anywhere]"><div class='space-y-2'><div class='font-medium'>Rejection Sampling</div><div class='mt-2 text-xs leading-5 bg-slate-50 dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700'>When you only have a uniform random generator for a small range, you can combine several calls to create a larger uniform sample space. Then you keep only the outcomes that map evenly to your desired range, discarding the rest and trying again, which guarantees uniformity.</div><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Why it fits (2) — properties</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>The source generator is uniform and each call is independent, so combinations produce a uniform distribution over the product space.</li><li>The target range must evenly divide a subset of that product space for rejection to preserve uniformity.</li></ul></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Spot it (3)</summary><ul class='list-disc pl-5 mt-1 text-xs'><li>Need to generate a uniform random integer in a range that is not a multiple of the source range</li><li>Only have a uniform generator with a smaller range</li><li>Can call the source multiple times to expand the sample space</li></ul></details><details open><summary class='text-xs font-semibold cursor-pointer mt-2'>How you'd derive it (first principles)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Imagine you have a 7-sided die and you need a fair 10-sided result.</li><li>Rolling twice gives 49 equally likely pairs, but 49 isn&#x27;t a multiple of 10, so a direct mapping would bias some numbers.</li><li>Instead, accept only the first 40 pairs (which is a multiple of 10), map them to 1-10, and reject the remaining 9 pairs, rolling again if you get one of them.</li></ol></details><details><summary class='text-xs font-semibold cursor-pointer mt-2'>Plan (4 steps)</summary><ol class='list-decimal pl-5 mt-1 text-xs space-y-1'><li>Call rand7() twice to obtain two numbers a and b.</li><li>Compute a combined value in a uniform space, e.g., (a-1)*7 + b giving 1..49.</li><li>If the combined value is within an accepted range that is a multiple of 10 (e.g., &lt;=40), return (value-1)%10 + 1.</li><li>Otherwise reject and repeat the process.</li></ol></details><div class='mt-2 text-xs'><span class='font-semibold'>Start when stuck:</span> If you&#x27;re stuck, think about combining two rolls to create a larger range. · Then consider discarding any result that doesn&#x27;t fit an even multiple of your target range.</div><div class="relative mt-3"><button id="gold-code-btn" onclick="copyCode('gold-code')" class="absolute right-2 top-2 inline-flex items-center justify-center rounded-md bg-slate-800 text-white px-2 py-1 text-xs font-medium">Copy</button><pre id="gold-code" class="bg-slate-950 text-slate-50 p-4 rounded-lg overflow-auto text-xs whitespace-pre-wrap break-words [overflow-wrap:anywhere]"><code class="language-python">def rand10():
+    while True:
+        a = rand7()
+        b = rand7()
+        num = (a - 1) * 7 + b
+        if num &lt;= 40:
+            return (num - 1) % 10 + 1</code></pre></div><div class='mt-2 text-xs'><span class='font-semibold'>Complexity:</span> O(1) expected per call, O(n) total for n calls</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-blue-50 dark:bg-blue-950/30 dark:border-blue-900 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-blue-900 dark:text-blue-200 text-sm">✅ Quick check</h2>
+      <div class="mt-3 space-y-3 text-sm break-words"><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q1: Why did we stop counting after the number 40?</div><div class='text-xs opacity-60 mt-1'>Hint: Think of filling boxes with balls. If you have 49 balls and 10 slots per box, you will have 9 empty spaces at the last box. Those empty spaces are the leftovers we must throw away.</div><button onclick="toggleAnswer('ans-1')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-1' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>Because 49 total pairs (from two 7‑sided rolls) cannot be divided evenly into groups of 10. Stopping at 40 removes the leftover pairs, ensuring every number 1‑10 appears the same number of times.</div></div><div class='rounded-lg border bg-white dark:bg-slate-800 dark:border-slate-700 p-3'><div class='font-medium text-xs'>Q2: What keeps the whole process fair if we lose some pairs during rejection?</div><div class='text-xs opacity-60 mt-1'>Hint: If you cut a rope into lengths that don&#x27;t divide evenly, the ends won&#x27;t align. You must cut off the unused scraps.</div><button onclick="toggleAnswer('ans-2')" class='mt-2 inline-flex items-center justify-center rounded-md bg-blue-600 text-white px-2 py-1 text-xs font-medium'>Reveal answer</button><div id='ans-2' class='hidden mt-2 bg-slate-50 dark:bg-slate-900 border dark:border-slate-700 rounded p-2 text-xs break-words'>We only keep pairs that fit perfectly into groups of ten. As long as the kept set has a complete number of groups, every outcome stays equally likely.</div></div></div>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white dark:bg-slate-900 dark:border-slate-800 shadow-sm">
+    <div class="p-4 sm:p-5">
+      <h2 class="font-semibold text-sm">Checklist</h2>
+      <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 break-words">If you need to generate a uniform random number in a range that is not a multiple of the source, combine multiple source calls to expand the range and reject outcomes that don&#x27;t divide evenly.</p>
+      <a href="https://leetcode.com/problems/implement-rand10-using-rand7/" class="inline-flex items-center justify-center rounded-md bg-slate-900 dark:bg-white dark:text-slate-900 text-white px-4 py-2 text-sm font-medium mt-4">Practice on LeetCode →</a>
+    </div>
+  </div>
+
+  <div id="artifacts" class="opacity-20 hover:opacity-60 transition">
+    <details class="rounded border border-dashed bg-slate-50 dark:bg-slate-900/50">
+      <summary class="text-[10px] tracking-widest uppercase cursor-pointer px-3 py-2 opacity-50">artifacts · scrape</summary>
+      <div class="p-3 space-y-2">
+        <div class="text-[10px] opacity-60">Deterministic ids: #artifact-naive, #artifact-gold, #artifact-align</div>
+        <script type="application/json" id="artifact-naive">{"pattern": "Rejection sampling", "why_obvious": "Two rand7 calls give 49 equiprobable outcomes.", "why_stalls": ["9/49 outcomes rejected → possible retries.", "Each rand10 may loop many times → hurts large n."], "complexity": "Expected O(1) per call, worst‑case unbounded; naïve count looks O(n^2).", "starter_code": "def rand10():\n    while True:\n        a = rand7()\n        b = rand7()\n        num = (a - 1) * 7 + b\n        if num <= 40:\n            return 1 + (num - 1) % 10", "takeaway": "Drop the plain loop and recycle rejected entropy to cut calls."}</script>
+        <script type="application/json" id="artifact-gold">{"checklist": "If you need to generate a uniform random number in a range that is not a multiple of the source, combine multiple source calls to expand the range and reject outcomes that don't divide evenly.", "complexity": "O(1) expected per call, O(n) total for n calls", "concept": "When you only have a uniform random generator for a small range, you can combine several calls to create a larger uniform sample space. Then you keep only the outcomes that map evenly to your desired range, discarding the rest and trying again, which guarantees uniformity.", "first_principles": ["Imagine you have a 7-sided die and you need a fair 10-sided result.", "Rolling twice gives 49 equally likely pairs, but 49 isn't a multiple of 10, so a direct mapping would bias some numbers.", "Instead, accept only the first 40 pairs (which is a multiple of 10), map them to 1-10, and reject the remaining 9 pairs, rolling again if you get one of them."], "how_to_start": ["If you're stuck, think about combining two rolls to create a larger range.", "Then consider discarding any result that doesn't fit an even multiple of your target range."], "pattern": "Rejection Sampling", "plan": ["Call rand7() twice to obtain two numbers a and b.", "Compute a combined value in a uniform space, e.g., (a-1)*7 + b giving 1..49.", "If the combined value is within an accepted range that is a multiple of 10 (e.g., <=40), return (value-1)%10 + 1.", "Otherwise reject and repeat the process."], "properties": ["The source generator is uniform and each call is independent, so combinations produce a uniform distribution over the product space.", "The target range must evenly divide a subset of that product space for rejection to preserve uniformity."], "starter_code": {"code": "def rand10():\n    while True:\n        a = rand7()\n        b = rand7()\n        num = (a - 1) * 7 + b\n        if num <= 40:\n            return (num - 1) % 10 + 1", "language": "python"}, "triggers": ["Need to generate a uniform random integer in a range that is not a multiple of the source range", "Only have a uniform generator with a smaller range", "Can call the source multiple times to expand the sample space"]}</script>
+        <script type="application/json" id="artifact-align">{"contrast": ["The naive way wastes effort by checking hundreds of pairs and throwing most away before finding a good one.", "The strong way plans ahead: it creates a safe pool of exactly enough pairs to form full groups of ten, accepts those immediately, and discards the rest."], "trigger": "Look for the moment where a tool gives fewer results than you need, and decide to toss the extra ones instead of starting over.", "quiz": [{"question": "Why did we stop counting after the number 40?", "answer": "Because 49 total pairs (from two 7‑sided rolls) cannot be divided evenly into groups of 10. Stopping at 40 removes the leftover pairs, ensuring every number 1‑10 appears the same number of times.", "hint": "Think of filling boxes with balls. If you have 49 balls and 10 slots per box, you will have 9 empty spaces at the last box. Those empty spaces are the leftovers we must throw away."}, {"question": "What keeps the whole process fair if we lose some pairs during rejection?", "answer": "We only keep pairs that fit perfectly into groups of ten. As long as the kept set has a complete number of groups, every outcome stays equally likely.", "hint": "If you cut a rope into lengths that don't divide evenly, the ends won't align. You must cut off the unused scraps."}]}</script>
+      </div>
+    </details>
+  </div>
+</main>
+<footer class="max-w-2xl mx-auto px-4 sm:px-6 py-6 text-xs text-slate-400 text-center break-words">zacharylyh.github.io/5-min-leetcode/implement-rand10-using-rand7/ · 8am SGT</footer>
+<script>
+(function(){const t=localStorage.getItem('theme');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.documentElement.classList.add('dark')})();
+function toggleDark(){document.documentElement.classList.toggle('dark');localStorage.setItem('theme',document.documentElement.classList.contains('dark')?'dark':'light')}
+function copyCode(id){const el=document.getElementById(id);navigator.clipboard.writeText(el.innerText);const b=document.getElementById(id+'-btn');b.innerText='Copied!';setTimeout(()=>b.innerText='Copy',1500)}
+function toggleAnswer(id){document.getElementById(id).classList.toggle('hidden')}
+function showTab(which){document.querySelectorAll('.tab-panel').forEach(e=>e.classList.add('hidden'));document.getElementById('panel-'+which).classList.remove('hidden');document.getElementById('tab-naive').classList.toggle('bg-white',which==='naive');document.getElementById('tab-naive').classList.toggle('dark:bg-slate-700',which==='naive');document.getElementById('tab-naive').classList.toggle('opacity-60',which!=='naive');document.getElementById('tab-gold').classList.toggle('bg-white',which==='gold');document.getElementById('tab-gold').classList.toggle('dark:bg-slate-700',which==='gold');document.getElementById('tab-gold').classList.toggle('opacity-60',which!=='gold');}
+(function(){const b=document.getElementById('progress');if(!b)return;function upd(){const h=document.documentElement;const p=(h.scrollTop/(h.scrollHeight-h.clientHeight))*100;b.style.width=p+'%'}window.addEventListener('scroll',upd,{passive:true});upd()})();
+</script>
+</body></html>
